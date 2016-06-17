@@ -1,3 +1,1 @@
-# programmierpraktikum-abschlussprojekt-die-bogo-bande
-Test
-Test
+# Abschlussprojekt der Bogo Bande

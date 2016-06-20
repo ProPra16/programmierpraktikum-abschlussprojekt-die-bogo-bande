@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<GridPane fx:controller="main.Controller" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="469.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.0" minWidth="10.0" prefWidth="131.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="50.0" maxHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="100.0" prefHeight="332.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <TabPane fx:id="tabs" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+        <tabs>
+          <Tab fx:id="tab_tests" text="Tests">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="Tests" prefHeight="296.0" prefWidth="469.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </TextArea>
+                     </children></AnchorPane>
+            </content>
+          </Tab>
+          <Tab fx:id="tab_code" text="Code">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="Code" layoutX="-3.0" layoutY="2.0" prefHeight="296.0" prefWidth="469.0">
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </TextArea>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <Pane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <VBox layoutY="2.0" prefHeight="15.0" prefWidth="469.0">
+               <children>
+                  <Text fx:id="task_name" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding></VBox>
+            <VBox layoutY="17.0" prefHeight="30.0" prefWidth="469.0">
+               <children>
+                  <Text fx:id="task_discripton" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </VBox>
+         </children>
+      </Pane>
+      <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <VBox layoutX="16.0" layoutY="1.0" prefHeight="26.0" prefWidth="100.0">
+               <children>
+                  <Button onAction="#compile" mnemonicParsing="false" text="compile" prefWidth="100.0"/>
+               </children>
+            </VBox>
+            <VBox layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="100.0">
+               <children>
+                  <Button onAction="#continueTab" mnemonicParsing="false" text="continue" prefWidth="100.0"/>
+               </children>
+            </VBox>
+         </children>
+      </Pane>
+   </children>
+</GridPane>

@@ -22,6 +22,13 @@ public class TaskDecoder {
         return document.getElementsByTagName("test").item(i).getTextContent().trim();
     }
 
+    public String getTestName(int i) {
+        return document.getElementsByTagName("test").item(i).getAttributes().getNamedItem("name").getTextContent();
+    }
+    public String getClassName(int i) {
+        return document.getElementsByTagName("class").item(i).getAttributes().getNamedItem("name").getTextContent();
+    }
+
     public String getDescription(int i) {
         return document.getElementsByTagName("description").item(i).getTextContent().trim();
     }

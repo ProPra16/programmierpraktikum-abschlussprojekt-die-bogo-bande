@@ -10,10 +10,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="469.0" />
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="292.0" minWidth="10.0" prefWidth="131.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="500.0" minWidth="500.0" prefWidth="500.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" />
   </columnConstraints>
   <rowConstraints>
     <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
@@ -77,10 +77,10 @@
             </VBox>
             <VBox layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="100.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#continueTab" prefWidth="100.0" text="continue" />
+                  <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueTab" prefWidth="100.0" text="continue" />
                </children>
             </VBox>
-            <Text fx:id="compileMessage" layoutX="16.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X" wrappingWidth="100.0" />
+            <Text fx:id="compileMessage" layoutX="16.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="290.0" />
          </children>
       </Pane>
    </children>

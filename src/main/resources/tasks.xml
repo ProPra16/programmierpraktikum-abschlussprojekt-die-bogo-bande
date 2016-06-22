@@ -1,0 +1,22 @@
+<tasks>
+    <exercise name="Römische Zahlen">
+        <description>Konvertiert arabische in römische Zahlen.</description>
+            <class name="RomanNumberConverter">
+                public class RomanNumberConverter {
+                }
+            </class>
+        <test name="RomanNumberConverterTest">
+import static org.junit.Assert.*;
+import org.junit.Test;
+public class RomanNumbersTest {
+            @Test
+    public void testSomething() {
+            }
+            }
+            </test>
+        <config>
+            <babysteps value="False" />
+            <timetracking value="True" />
+        </config>
+    </exercise>
+</tasks>

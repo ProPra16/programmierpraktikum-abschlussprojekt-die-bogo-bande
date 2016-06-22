@@ -4,3 +4,8 @@ build
 .settings
 local.*
 bin
+.gradle
+.idea
+.git
+ui
+gradle

@@ -4,6 +4,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -11,6 +14,7 @@ import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,33 +47,22 @@ public class Controller {
     private TextArea Code;
     @FXML
     private TextArea Tests;
+    @FXML
+    private Pane button_pane;
 
     @FXML
     private ComboBox<String> combo;
 
     @FXML
     protected void initialize() {
-        if (combo != null) {
-            initializeComb();
-        } else {
-            initializeTDDT(Main.taskid);
-        }
-
+        initializeComb();
+        design();
     }
 
     @FXML
-    protected void changeScene(ActionEvent event) {
-        Parent root = null;
-        Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue();
-        try {
-            root = FXMLLoader.load(getClass().getResource("EditorDesign.fxml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setTitle("TDDP - Test Driven Development Trainer");
-        stage.setScene(new Scene(root));
-        stage.centerOnScreen();
-        stage.show();
+    protected void task(ActionEvent event) {
+        if(combo.getSelectionModel().selectedIndexProperty().intValue()>0)initializeTDDT(combo.getSelectionModel().selectedIndexProperty().intValue()-1);
+        combo.setDisable(true);
     }
 
     @FXML
@@ -91,7 +84,7 @@ public class Controller {
                     compileMessage.setFill(Color.GREEN);
                     if (testJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         continueButton.setDisable(false);
-                        testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e->System.out.println(e.getMessage()));
+                        testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(e.getMessage()));
                         compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
                         return true;
                     } else {
@@ -115,7 +108,7 @@ public class Controller {
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
-                    compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString()+codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
+                    compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
                 } else {
                     if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         codeJavaStringCompiler.compileAndRunTests();
@@ -153,9 +146,43 @@ public class Controller {
         }
     }
 
+    protected void design() {
+        tabs.setDisable(true);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        double tab_width = width / 2;
+        double tab_height = height - 50;
+
+        try {
+            tabs.setMaxWidth(tab_width);
+            tabs.setMinWidth(tab_width);
+            Tests.setMinWidth(tab_width);
+            Tests.setMaxWidth(tab_width);
+            Code.setMinWidth(tab_width);
+            Code.setMaxWidth(tab_width);
+            button_pane.setMaxWidth(tab_width);
+            button_pane.setMinWidth(tab_width);
+            tabs.setMaxHeight(tab_height);
+            tabs.setMinHeight(tab_height);
+            Tests.setMaxHeight(tab_height);
+            Tests.setMinHeight(tab_height);
+            Code.setMaxHeight(tab_height);
+            Code.setMinHeight(tab_height);
+            Code.setText("");
+            Tests.setText("");
+            combo.setLayoutX(tab_width-160);
+        } catch (Exception e) {
+            System.out.println("ERROR");
+        }
+
+    }
+
     protected void initializeTDDT(int index) {
 
         try {
+            tabs.setDisable(false);
             TaskDecoder tasks = new TaskDecoder();
             task_name.setText(tasks.getExcercise(index));
             task_discripton.setText(tasks.getDescription(index));
@@ -183,6 +210,7 @@ public class Controller {
 
             int i = tasks.getTasks().getLength();
             List<String> taskList = new ArrayList<>();
+                taskList.add("Select a Task");
             for (int j = 0; j < i; j++) {
                 taskList.add(tasks.getTasks().item(j).getAttributes().getNamedItem("name").getTextContent());
             }

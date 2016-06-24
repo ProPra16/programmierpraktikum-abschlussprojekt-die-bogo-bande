@@ -22,7 +22,7 @@ public class RomanNumbersTest{
 }
             </test>
         <config>
-            <babysteps value="False" />
+            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
             <timetracking value="True" />
         </config>
     </exercise>

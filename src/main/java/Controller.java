@@ -1,10 +1,8 @@
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -15,7 +13,6 @@ import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
 import java.awt.*;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -44,6 +41,8 @@ public class Controller {
     @FXML
     private Text task_discripton;
     @FXML
+    private Text babysteps;
+    @FXML
     private TextArea Code;
     @FXML
     private TextArea Tests;
@@ -61,13 +60,13 @@ public class Controller {
 
     @FXML
     protected void task(ActionEvent event) {
-        if(combo.getSelectionModel().selectedIndexProperty().intValue()>0)initializeTDDT(combo.getSelectionModel().selectedIndexProperty().intValue()-1);
+        if (combo.getSelectionModel().selectedIndexProperty().intValue() > 0)
+            initializeTDDT(combo.getSelectionModel().selectedIndexProperty().intValue() - 1);
         combo.setDisable(true);
     }
 
     @FXML
     protected boolean compile(ActionEvent event) {
-
         if (tab_tests.isSelected()) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
@@ -91,7 +90,6 @@ public class Controller {
                         continueButton.setDisable(true);
                         compileMessage.setText("No Errors while compiling\nNo Test failed, write a failing Test!");
                     }
-                    ;
                 }
 
                 return false;
@@ -172,18 +170,46 @@ public class Controller {
             Code.setMinHeight(tab_height);
             Code.setText("");
             Tests.setText("");
-            combo.setLayoutX(tab_width-160);
+            combo.setLayoutX(tab_width - 160);
         } catch (Exception e) {
             System.out.println("ERROR");
         }
 
     }
 
+    Task<Integer> babyStepsTimer = new Task<Integer>() {
+        @Override
+        protected Integer call() throws Exception {
+            TaskDecoder tasks = new TaskDecoder();
+            int i;
+            while(!isCancelled()) {
+                for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
+                    if (isCancelled()) {
+                        break;
+                    }
+                    babysteps.setText("time: " + i + "s");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException interrupted) {
+                        System.out.println("tasks over");
+                    }
+                }
+                if (i == 0) {//reset;
+                    if(!compile(null))initializeTDDT(Main.taskid);
+                    else continueTab(null);
+                }
+            }
+            return null;
+        }
+    };
+
     protected void initializeTDDT(int index) {
 
         try {
             tabs.setDisable(false);
             TaskDecoder tasks = new TaskDecoder();
+            if (tasks.isBabysteps(index)) new Thread(babyStepsTimer).start();
+            else babysteps.setVisible(false);
             task_name.setText(tasks.getExcercise(index));
             task_discripton.setText(tasks.getDescription(index));
             Code.setDisable(true);
@@ -207,10 +233,9 @@ public class Controller {
     protected void initializeComb() {
         try {
             TaskDecoder tasks = new TaskDecoder();
-
             int i = tasks.getTasks().getLength();
             List<String> taskList = new ArrayList<>();
-                taskList.add("Select a Task");
+            taskList.add("Select a Task");
             for (int j = 0; j < i; j++) {
                 taskList.add(tasks.getTasks().item(j).getAttributes().getNamedItem("name").getTextContent());
             }

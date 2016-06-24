@@ -4,6 +4,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.InterruptedIOException;
 
 public class TaskDecoder {
 
@@ -41,5 +42,12 @@ public class TaskDecoder {
         return document.getElementsByTagName("exercise");
     }
 
+    public Boolean isBabysteps(int i){
+            return Boolean.parseBoolean(document.getElementsByTagName("babysteps").item(i).getAttributes().getNamedItem("value").getTextContent());
+    }
+
+    public int getBabystepsTime(int i){
+            return Integer.parseInt(document.getElementsByTagName("babysteps").item(i).getAttributes().getNamedItem("time").getTextContent());
+    }
 
 }

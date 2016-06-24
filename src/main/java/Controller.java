@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -13,6 +15,9 @@ import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,6 +31,8 @@ public class Controller {
     Path testPath = Paths.get(Main.taskid + ".java");
 
 
+    @FXML
+    private Button config;
     @FXML
     private Button continueButton;
     @FXML
@@ -153,6 +160,9 @@ public class Controller {
         double tab_width = width / 2;
         double tab_height = height - 50;
 
+        //Image configIcon = new Image("gear.png");
+        //config.setGraphic(new ImageView(configIcon));
+
         try {
             tabs.setMaxWidth(tab_width);
             tabs.setMinWidth(tab_width);
@@ -182,7 +192,7 @@ public class Controller {
         protected Integer call() throws Exception {
             TaskDecoder tasks = new TaskDecoder();
             int i;
-            while(!isCancelled()) {
+            while (!isCancelled()) {
                 for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
                     if (isCancelled()) {
                         break;
@@ -195,7 +205,7 @@ public class Controller {
                     }
                 }
                 if (i == 0) {
-                    if(!compile(null))initializeTDDT(Main.taskid);
+                    if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
             }

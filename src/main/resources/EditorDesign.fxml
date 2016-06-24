@@ -95,6 +95,11 @@
                 </VBox>
                 <Text fx:id="babysteps" layoutX="16.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="290.0" />
                 <Text fx:id="compileMessage" layoutX="16.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" wrappingWidth="290.0" />
+            <VBox layoutX="16.0" layoutY="131.0" prefHeight="26.0" prefWidth="100.0">
+               <children>
+                  <Button graphic="gear.png" fx:id="configMenu" mnemonicParsing="false" onAction="#continueTab" prefWidth="100.0" text="config" />
+               </children>
+            </VBox>
             </children>
         </Pane>
     </children>

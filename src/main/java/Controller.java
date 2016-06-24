@@ -194,26 +194,27 @@ public class Controller {
                         System.out.println("tasks over");
                     }
                 }
-                if (i == 0) {//reset;
+                if (i == 0) {
                     if(!compile(null))initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
             }
-            return null;
+            return 0;
         }
     };
 
     protected void initializeTDDT(int index) {
 
         try {
-            //test2
             tabs.setDisable(false);
+            tabs.getSelectionModel().selectFirst();
             TaskDecoder tasks = new TaskDecoder();
             if (tasks.isBabysteps(index)) new Thread(babyStepsTimer).start();
             else babysteps.setVisible(false);
             task_name.setText(tasks.getExcercise(index));
             task_discripton.setText(tasks.getDescription(index));
             Code.setDisable(true);
+            Tests.setDisable(false);
             continueButton.setDisable(true);
 
             compileMessage.setFill(Color.BLACK);

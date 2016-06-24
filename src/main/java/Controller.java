@@ -206,7 +206,7 @@ public class Controller {
     protected void initializeTDDT(int index) {
 
         try {
-            //test
+            //test2
             tabs.setDisable(false);
             TaskDecoder tasks = new TaskDecoder();
             if (tasks.isBabysteps(index)) new Thread(babyStepsTimer).start();

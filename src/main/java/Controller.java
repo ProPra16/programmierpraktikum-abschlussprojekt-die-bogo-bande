@@ -6,8 +6,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import vk.core.api.CompilationUnit;
@@ -32,7 +34,11 @@ public class Controller {
 
 
     @FXML
-    private Button config;
+    private Rectangle Menu;
+    @FXML
+    private Button compile;
+    @FXML
+    private Button configMenu;
     @FXML
     private Button continueButton;
     @FXML
@@ -55,6 +61,8 @@ public class Controller {
     private TextArea Tests;
     @FXML
     private Pane button_pane;
+    @FXML
+    private VBox configMenueWrapper;
 
     @FXML
     private ComboBox<String> combo;
@@ -160,8 +168,24 @@ public class Controller {
         double tab_width = width / 2;
         double tab_height = height - 50;
 
-        //Image configIcon = new Image("gear.png");
-        //config.setGraphic(new ImageView(configIcon));
+        Image configIconImage = new Image("file:build/resources/main/gear.png");
+        ImageView configIcon = new ImageView(configIconImage);
+        Image compileIconImage = new Image("file:build/resources/main/run.png");
+        ImageView compileIcon = new ImageView(compileIconImage);
+        Image continueIconImage = new Image("file:build/resources/main/arrow_right.png");
+        ImageView continueIcon = new ImageView(continueIconImage);
+        continueButton.setGraphic(continueIcon);
+        continueButton.setDisable(true);
+        compile.setGraphic(compileIcon);
+        compile.setDisable(true);
+        configMenu.setGraphic(configIcon);
+        //configMenu.setBorder(null);
+        //configMenu.setBackground(null);
+        configMenu.setText("Settings");
+        configMenueWrapper.setLayoutX(tab_width-180);
+        configMenu.setPrefWidth(125);
+        configMenu.setPrefHeight(32);
+        configMenueWrapper.setLayoutY(-45);
 
         try {
             tabs.setMaxWidth(tab_width);
@@ -258,6 +282,20 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @FXML
+    protected void configMenu(ActionEvent event){
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Menu.setVisible(true);
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        double tab_width = width / 2;
+        double tab_height = height - 50;
+        Menu.setY(tab_height);
+        Menu.setX(tab_width);
 
     }
 }

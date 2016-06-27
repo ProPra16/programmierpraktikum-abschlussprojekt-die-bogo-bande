@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.shape.Box?>
 <GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
@@ -104,7 +105,13 @@
                                 text="config"/>
                     </children>
                 </VBox>
-                <Rectangle fx:id="Menu" width="300" height="400" fill="black" visible="false"/>
+                <VBox fx:id="Menu" prefWidth="300" prefHeight="400" visible="false">
+                    <children>
+                        <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="332.0" majorTickUnit="10.0" max="100.0"
+                                prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
+                                showTickMarks="true" />
+                    </children>
+                </VBox>
             </children>
         </Pane>
     </children>

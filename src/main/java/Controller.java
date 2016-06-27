@@ -9,7 +9,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import vk.core.api.CompilationUnit;
@@ -29,14 +28,17 @@ import java.util.List;
 
 public class Controller {
 
+    private float Volume;
+
     private Stage stage = Main.primaryStage;
 
     Path codePath = Paths.get("/tmp.java");
     Path testPath = Paths.get(Main.taskid + ".java");
 
-
     @FXML
-    private Rectangle Menu;
+    private VBox Menu;
+    @FXML
+    private Slider volSlider;
     @FXML
     private Button compile;
     @FXML
@@ -68,13 +70,13 @@ public class Controller {
     @FXML
     private ComboBox<String> combo;
 
-    private boolean muted = false;
+    private int open = 0;
 
     @FXML
     protected void initialize() {
+        getVol();
         initializeComb();
         design();
-
         stage.setOnCloseRequest(event -> {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
@@ -235,10 +237,8 @@ public class Controller {
                     if (i == 10) {
                         countdownVol = sound("build/resources/main/sound/countdown.wav");
                     }
-                    if (!(countdownVol == null) && muted) {
-                        countdownVol.setValue(countdownVol.getMinimum());
-                    } else if (!(countdownVol == null)) {
-                        countdownVol.setValue(0);
+                    if (!(countdownVol==null)){
+                        countdownVol.setValue(Volume);
                     }
 
                     babysteps.setText("time: " + i + "s");
@@ -253,10 +253,8 @@ public class Controller {
                 FloatControl timeoverVol = null;
                 if (i == 0) {
                     timeoverVol = sound("build/resources/main/sound/over.wav");
-                    if (!(timeoverVol == null) && muted) {
-                        timeoverVol.setValue(timeoverVol.getMinimum());
-                    } else if (!(timeoverVol == null)) {
-                        timeoverVol.setValue(0);
+                    if (!(timeoverVol==null)) {
+                        timeoverVol.setValue(Volume);
                     }
                     babysteps.setText("time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
@@ -332,16 +330,50 @@ public class Controller {
 
     }
 
+    private void getVol() {
+        FloatControl x = sound("build/resources/main/sound/test.wav");
+        x.setValue(x.getMinimum());
+        Volume = 0;
+        volSlider.setValue((-x.getMinimum() / (-x.getMinimum() + x.getMaximum()) * 100));
+
+    }
+
     @FXML
     protected void configMenu(ActionEvent event) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double height = screenSize.getHeight();
-        Menu.setX(-Menu.getWidth() / 2);
-        Menu.setY((height - Menu.getHeight()) / 3);
-        if (Menu.isVisible()) Menu.setVisible(false);
-        else Menu.setVisible(true);
-        if (!muted) muted = true;
-        else muted = false;
+        Menu.setLayoutX(-Menu.getWidth() / 2);
+        Menu.setLayoutY((height - Menu.getHeight()) / 3);
+        Menu.setVisible(true);
+        if (open==0) {
+            Menu.setVisible(true);
+            new Thread(getVolume).start();
+            open++;
+        } else {
+            Menu.setVisible(false);
+            getVolume.cancel();
+            open++;
+            open=0;
+        }
     }
+
+    Task<Integer> getVolume = new Task<Integer>() {
+        @Override
+        protected Integer call() throws Exception {
+            FloatControl x = sound("build/resources/main/sound/test.wav");
+            while(open<2){
+                if(Volume!=(float)((x.getMinimum() * (1-(volSlider.getValue()/100))))){
+                   Volume =(float)((x.getMinimum() * (1-(volSlider.getValue()/100))));
+                    System.out.println(Volume);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException interrupted) {
+                    System.out.println("tasks over");
+                }
+            }
+            return null;
+        }
+    };
 }
 

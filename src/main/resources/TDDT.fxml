@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
+
 <GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
@@ -103,9 +104,9 @@
                     <children>
                         <Button fx:id="configMenu" mnemonicParsing="false" onAction="#configMenu"
                                 text="config"/>
-                        <Rectangle fx:id="Menu" width="100" height="100" fill="black" visible="false"/>
                     </children>
                 </VBox>
+                <Rectangle fx:id="Menu" width="300" height="400" fill="black" visible="false"/>
             </children>
         </Pane>
     </children>

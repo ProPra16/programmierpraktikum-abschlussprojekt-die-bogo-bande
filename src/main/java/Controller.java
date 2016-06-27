@@ -1,6 +1,7 @@
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.AccessibleRole;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
@@ -21,6 +22,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
@@ -87,6 +89,7 @@ public class Controller {
     protected void task(ActionEvent event) {
         if (combo.getSelectionModel().selectedIndexProperty().intValue() > 0)
             initializeTDDT(combo.getSelectionModel().selectedIndexProperty().intValue() - 1);
+        Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue()-1;
         combo.setDisable(true);
     }
 
@@ -326,15 +329,12 @@ public class Controller {
 
     @FXML
     protected void configMenu(ActionEvent event) {
-
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Menu.setVisible(true);
-        double width = screenSize.getWidth();
         double height = screenSize.getHeight();
-        double tab_width = width / 2;
-        double tab_height = height - 50;
-        Menu.setY(tab_height);
-        Menu.setX(tab_width);
+        Menu.setX(-Menu.getWidth()/2);
+        Menu.setY((height-Menu.getHeight())/3);
+        if(Menu.isVisible())Menu.setVisible(false);
+        else Menu.setVisible(true);
         if(!muted)muted = true;
         else muted = false;
     }

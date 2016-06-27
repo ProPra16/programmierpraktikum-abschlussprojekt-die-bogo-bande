@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -19,6 +20,7 @@ import vk.core.api.JavaStringCompiler;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
@@ -224,50 +226,51 @@ public class Controller {
         protected Integer call() throws Exception {
             TaskDecoder tasks = new TaskDecoder();
             int i;
-            Clip countdown = null;
+            FloatControl countdownVol = null;
             while (!isCancelled()) {
                 for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
                     if (isCancelled()) {
                         break;
                     }
-                    if (i == 10) {
-                        countdown = sound("build/resources/main/sound/countdown.wav");
-                    }
-                    if(muted&&!countdown.equals(null))countdown.close();
+                    if(i==10){countdownVol = sound("build/resources/main/sound/countdown.wav");}
+                    if(!(countdownVol==null)&&muted){countdownVol.setValue(countdownVol.getMinimum());}
+                    else if(!(countdownVol==null)){countdownVol.setValue(0);}
+
                     babysteps.setText("time: " + i + "s");
+
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException interrupted) {
-                        if(!countdown.equals(null))countdown.close();
+
                         System.out.println("tasks over");
                     }
                 }
-                Clip timeover = null;
+                FloatControl timeoverVol = null;
                 if (i == 0) {
-                    timeover = sound("build/resources/main/sound/over.wav");
-                    if(muted&&!timeover.equals(null))timeover.close();
+                    timeoverVol = sound("build/resources/main/sound/over.wav");
+                    if(!(timeoverVol==null)&&muted){timeoverVol.setValue(timeoverVol.getMinimum());}
+                    else if(!(timeoverVol==null)){timeoverVol.setValue(0);}
                     babysteps.setText("time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
             }
             return 0;
-        }
-    };
+            }
+        };
 
-    private Clip sound(String soundFile) {
-        if(!muted) {
+    private FloatControl sound(String soundFile) {
             File f = new File("./" + soundFile);
             try {
                 AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
                 Clip clip = AudioSystem.getClip();
                 clip.open(audioIn);
                 clip.start();
-                return clip;
+                FloatControl volume= (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+                return volume;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
         return null;
     }
 

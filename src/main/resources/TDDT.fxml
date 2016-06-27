@@ -3,12 +3,9 @@
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
-
 <GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
@@ -80,7 +77,8 @@
             <children>
                 <VBox layoutX="16.0" layoutY="1.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
-                        <Button id="compile" fx:id="compile" mnemonicParsing="false" onAction="#compile" prefWidth="120.0" text="compile"/>
+                        <Button id="compile" fx:id="compile" mnemonicParsing="false" onAction="#compile"
+                                prefWidth="120.0" text="compile"/>
                     </children>
                 </VBox>
                 <VBox layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="120.0">

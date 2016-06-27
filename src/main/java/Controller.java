@@ -1,11 +1,9 @@
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.AccessibleRole;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -22,7 +20,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
@@ -89,7 +86,7 @@ public class Controller {
     protected void task(ActionEvent event) {
         if (combo.getSelectionModel().selectedIndexProperty().intValue() > 0)
             initializeTDDT(combo.getSelectionModel().selectedIndexProperty().intValue() - 1);
-        Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue()-1;
+        Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue() - 1;
         combo.setDisable(true);
     }
 
@@ -235,9 +232,14 @@ public class Controller {
                     if (isCancelled()) {
                         break;
                     }
-                    if(i==10){countdownVol = sound("build/resources/main/sound/countdown.wav");}
-                    if(!(countdownVol==null)&&muted){countdownVol.setValue(countdownVol.getMinimum());}
-                    else if(!(countdownVol==null)){countdownVol.setValue(0);}
+                    if (i == 10) {
+                        countdownVol = sound("build/resources/main/sound/countdown.wav");
+                    }
+                    if (!(countdownVol == null) && muted) {
+                        countdownVol.setValue(countdownVol.getMinimum());
+                    } else if (!(countdownVol == null)) {
+                        countdownVol.setValue(0);
+                    }
 
                     babysteps.setText("time: " + i + "s");
 
@@ -251,29 +253,32 @@ public class Controller {
                 FloatControl timeoverVol = null;
                 if (i == 0) {
                     timeoverVol = sound("build/resources/main/sound/over.wav");
-                    if(!(timeoverVol==null)&&muted){timeoverVol.setValue(timeoverVol.getMinimum());}
-                    else if(!(timeoverVol==null)){timeoverVol.setValue(0);}
+                    if (!(timeoverVol == null) && muted) {
+                        timeoverVol.setValue(timeoverVol.getMinimum());
+                    } else if (!(timeoverVol == null)) {
+                        timeoverVol.setValue(0);
+                    }
                     babysteps.setText("time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
             }
             return 0;
-            }
-        };
+        }
+    };
 
     private FloatControl sound(String soundFile) {
-            File f = new File("./" + soundFile);
-            try {
-                AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioIn);
-                clip.start();
-                FloatControl volume= (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-                return volume;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        File f = new File("./" + soundFile);
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+            FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            return volume;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
@@ -331,11 +336,11 @@ public class Controller {
     protected void configMenu(ActionEvent event) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double height = screenSize.getHeight();
-        Menu.setX(-Menu.getWidth()/2);
-        Menu.setY((height-Menu.getHeight())/3);
-        if(Menu.isVisible())Menu.setVisible(false);
+        Menu.setX(-Menu.getWidth() / 2);
+        Menu.setY((height - Menu.getHeight()) / 3);
+        if (Menu.isVisible()) Menu.setVisible(false);
         else Menu.setVisible(true);
-        if(!muted)muted = true;
+        if (!muted) muted = true;
         else muted = false;
     }
 }

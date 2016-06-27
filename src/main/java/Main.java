@@ -18,10 +18,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("EditorDesign.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("TDDT.fxml"));
         primaryStage.setTitle("TDDP - Select Task");
         primaryStage.setScene(new Scene(root));
         primaryStage.setMaximized(true);
         primaryStage.show();
     }
+
 }

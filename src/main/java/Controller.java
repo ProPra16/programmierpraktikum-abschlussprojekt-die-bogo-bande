@@ -4,11 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -16,10 +16,11 @@ import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -71,6 +72,12 @@ public class Controller {
     protected void initialize() {
         initializeComb();
         design();
+
+        stage.setOnCloseRequest(event -> {
+            if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
+            stage.close();
+        });
+
     }
 
     @FXML
@@ -168,11 +175,11 @@ public class Controller {
         double tab_width = width / 2;
         double tab_height = height - 50;
 
-        Image configIconImage = new Image("file:build/resources/main/gear.png");
+        Image configIconImage = new Image("file:build/resources/main/images/gear.png");
         ImageView configIcon = new ImageView(configIconImage);
-        Image compileIconImage = new Image("file:build/resources/main/run.png");
+        Image compileIconImage = new Image("file:build/resources/main/images/run.png");
         ImageView compileIcon = new ImageView(compileIconImage);
-        Image continueIconImage = new Image("file:build/resources/main/arrow_right.png");
+        Image continueIconImage = new Image("file:build/resources/main/images/arrow_right.png");
         ImageView continueIcon = new ImageView(continueIconImage);
         continueButton.setGraphic(continueIcon);
         continueButton.setDisable(true);
@@ -182,7 +189,7 @@ public class Controller {
         //configMenu.setBorder(null);
         //configMenu.setBackground(null);
         configMenu.setText("Settings");
-        configMenueWrapper.setLayoutX(tab_width-180);
+        configMenueWrapper.setLayoutX(tab_width - 180);
         configMenu.setPrefWidth(125);
         configMenu.setPrefHeight(32);
         configMenueWrapper.setLayoutY(-45);
@@ -216,30 +223,56 @@ public class Controller {
         protected Integer call() throws Exception {
             TaskDecoder tasks = new TaskDecoder();
             int i;
+            Clip countdown = null;
             while (!isCancelled()) {
                 for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
                     if (isCancelled()) {
                         break;
                     }
+                    if (i == 10) {
+                        countdown = playSound("build/resources/main/sound/countdown.wav");
+                    }
+
                     babysteps.setText("time: " + i + "s");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException interrupted) {
+                        countdown.close();
                         System.out.println("tasks over");
                     }
                 }
+                Clip timeover = null;
                 if (i == 0) {
+                    timeover = playSound("build/resources/main/sound/over.wav");
+                    babysteps.setText("time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
+                if (!timeover.equals(null)) timeover.close();
             }
             return 0;
         }
     };
 
+    private Clip playSound(String soundFile) {
+        File f = new File("./" + soundFile);
+        try {
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+            return clip;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     protected void initializeTDDT(int index) {
 
         try {
+            compile.setDisable(false);
+            continueButton.setDisable(false);
             tabs.setDisable(false);
             tabs.getSelectionModel().selectFirst();
             TaskDecoder tasks = new TaskDecoder();
@@ -286,7 +319,7 @@ public class Controller {
     }
 
     @FXML
-    protected void configMenu(ActionEvent event){
+    protected void configMenu(ActionEvent event) {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Menu.setVisible(true);

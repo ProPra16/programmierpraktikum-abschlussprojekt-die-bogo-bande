@@ -2,15 +2,13 @@
 
 [![Build Status](https://travis-ci.org/ProPra16/programmierpraktikum-abschlussprojekt-die-bogo-bande.svg?branch=master)](https://travis-ci.org/ProPra16/programmierpraktikum-abschlussprojekt-die-bogo-bande)
 
-Hier sind halt die Pros unterwegs, kappa.
-test
-test
+Hier sind halt die Pros unterwegs, kappa.\n
 
-Thanks @thomasevd for the countdown sound
+Thanks @thomasevd for the countdown sound\n
 https://www.freesound.org/people/thomasevd/sounds/202193/
 Converted his file to wav
 
-Thanks @SgtPepperArc360 for the "time over" sound check
+Thanks @SgtPepperArc360 for the "time over" sound check\n
 https://www.freesound.org/people/SgtPepperArc360/sounds/341732/
 
 PlaySound Snippet from Andrew Jenkins on

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES"/>
@@ -67,7 +67,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                     </padding>
                 </VBox>
-                <ComboBox fx:id="combo" editable="false" layoutY="7.0" onAction="#task">
+                <ComboBox id="combo" fx:id="combo" editable="false" layoutY="7.0" onAction="#task">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                         </FXCollections>
@@ -77,20 +77,20 @@
         </Pane>
         <Pane fx:id="button_pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-                <VBox layoutX="16.0" layoutY="1.0" prefHeight="26.0" prefWidth="100.0">
+                <VBox layoutX="16.0" layoutY="1.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
-                        <Button fx:id="compile" mnemonicParsing="false" onAction="#compile" prefWidth="100.0" text="compile"/>
+                        <Button id="compile" fx:id="compile" mnemonicParsing="false" onAction="#compile" prefWidth="120.0" text="compile"/>
                     </children>
                 </VBox>
-                <VBox layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="100.0">
+                <VBox layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
-                        <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueTab" prefWidth="100.0"
+                        <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueTab" prefWidth="120.0"
                                 text="continue"/>
                     </children>
                 </VBox>
-                <VBox layoutX="16.0" layoutY="91.0" prefHeight="26.0" prefWidth="100.0">
+                <VBox layoutX="16.0" layoutY="91.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
-                        <Button fx:id="undo" mnemonicParsing="false" onAction="#continueTab" prefWidth="100.0"
+                        <Button fx:id="undo" mnemonicParsing="false" onAction="#continueTab" prefWidth="120.0"
                                 text="undo">
                         </Button>
                     </children>
@@ -101,7 +101,7 @@
                       text="" wrappingWidth="290.0"/>
                 <VBox fx:id="configMenueWrapper">
                     <children>
-                        <Button fx:id="configMenu" mnemonicParsing="false" onAction="#configMenu" prefWidth="32.0"
+                        <Button fx:id="configMenu" mnemonicParsing="false" onAction="#configMenu"
                                 text="config"/>
                         <Rectangle fx:id="Menu" width="100" height="100" fill="black" visible="false"/>
                     </children>

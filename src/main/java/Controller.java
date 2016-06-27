@@ -64,9 +64,10 @@ public class Controller {
     private Pane button_pane;
     @FXML
     private VBox configMenueWrapper;
-
     @FXML
     private ComboBox<String> combo;
+
+    private boolean muted = false;
 
     @FXML
     protected void initialize() {
@@ -230,40 +231,42 @@ public class Controller {
                         break;
                     }
                     if (i == 10) {
-                        countdown = playSound("build/resources/main/sound/countdown.wav");
+                        countdown = sound("build/resources/main/sound/countdown.wav");
                     }
-
+                    if(muted&&!countdown.equals(null))countdown.close();
                     babysteps.setText("time: " + i + "s");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException interrupted) {
-                        countdown.close();
+                        if(!countdown.equals(null))countdown.close();
                         System.out.println("tasks over");
                     }
                 }
                 Clip timeover = null;
                 if (i == 0) {
-                    timeover = playSound("build/resources/main/sound/over.wav");
+                    timeover = sound("build/resources/main/sound/over.wav");
+                    if(muted&&!timeover.equals(null))timeover.close();
                     babysteps.setText("time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
-                if (!timeover.equals(null)) timeover.close();
             }
             return 0;
         }
     };
 
-    private Clip playSound(String soundFile) {
-        File f = new File("./" + soundFile);
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-            return clip;
-        } catch (Exception e) {
-            e.printStackTrace();
+    private Clip sound(String soundFile) {
+        if(!muted) {
+            File f = new File("./" + soundFile);
+            try {
+                AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioIn);
+                clip.start();
+                return clip;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -329,7 +332,8 @@ public class Controller {
         double tab_height = height - 50;
         Menu.setY(tab_height);
         Menu.setX(tab_width);
-
+        if(!muted)muted = true;
+        else muted = false;
     }
 }
 

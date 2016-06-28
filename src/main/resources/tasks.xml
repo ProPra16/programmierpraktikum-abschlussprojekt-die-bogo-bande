@@ -1,4 +1,27 @@
 <tasks>
+    <exercise name="Recent Task">
+        <description>fileload</description>
+        <class name="TestCode">
+            public class TestCode{
+            public static String convert(){
+            return null;
+            }
+            }
+        </class>
+        <test name="TestTest">
+            import static org.junit.Assert.*;
+            import org.junit.Test;
+
+            public class TestTest{
+
+            @Test
+            public void aTest(){
+            assertEquals(null,TestCode.convert());
+            }
+
+            }
+        </test>
+    </exercise>
     <exercise name="Test">
         <description>Test ya Shit</description>
             <class name="TestCode">

@@ -1,3 +1,5 @@
+package loader;
+
 import javafx.scene.control.TextArea;
 import java.io.IOException;
 import java.nio.file.Files;

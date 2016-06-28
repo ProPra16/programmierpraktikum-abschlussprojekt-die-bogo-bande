@@ -11,13 +11,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import loader.SaveData;
+import loader.TaskDecoder;
 import sound.Sound;
 import sound.Volume;
 import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
-import javax.sound.sampled.FloatControl;
 import java.awt.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -314,7 +315,7 @@ public class Controller {
             TaskDecoder tasks = new TaskDecoder();
             int i = tasks.getTasks().getLength();
             List<String> taskList = new ArrayList<>();
-            taskList.add("Select a Task");
+            taskList.add("Select a Task ...");
             for (int j = 0; j < i; j++) {
                 taskList.add(tasks.getTasks().item(j).getAttributes().getNamedItem("name").getTextContent());
             }

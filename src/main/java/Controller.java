@@ -15,12 +15,8 @@ import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import java.awt.*;
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,7 +34,7 @@ public class Controller {
     @FXML
     private VBox Menu;
     @FXML
-    private Slider volSlider;
+    public Slider volSlider;
     @FXML
     private Button compile;
     @FXML
@@ -70,11 +66,11 @@ public class Controller {
     @FXML
     private ComboBox<String> combo;
 
-    private int open = 0;
+    public int open = 0;
 
     @FXML
     protected void initialize() {
-        getVol();
+        Sound.getVol(this);
         initializeComb();
         design();
         stage.setOnCloseRequest(event -> {
@@ -235,7 +231,7 @@ public class Controller {
                         break;
                     }
                     if (i == 10) {
-                        countdownVol = sound("build/resources/main/sound/countdown.wav");
+                        countdownVol = Sound.sound("build/resources/main/sound/countdown.wav");
                     }
                     if (!(countdownVol==null)){
                         countdownVol.setValue(Volume);
@@ -252,7 +248,7 @@ public class Controller {
                 }
                 FloatControl timeoverVol = null;
                 if (i == 0) {
-                    timeoverVol = sound("build/resources/main/sound/over.wav");
+                    timeoverVol = Sound.sound("build/resources/main/sound/over.wav");
                     if (!(timeoverVol==null)) {
                         timeoverVol.setValue(Volume);
                     }
@@ -265,20 +261,7 @@ public class Controller {
         }
     };
 
-    private FloatControl sound(String soundFile) {
-        File f = new File("./" + soundFile);
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(f.toURI().toURL());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-            FloatControl volume = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-            return volume;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
 
     protected void initializeTDDT(int index) {
 
@@ -330,14 +313,6 @@ public class Controller {
 
     }
 
-    private void getVol() {
-        FloatControl x = sound("build/resources/main/sound/test.wav");
-        x.setValue(x.getMinimum());
-        Volume = 0;
-        volSlider.setValue((-x.getMinimum() / (-x.getMinimum() + x.getMaximum()) * 100));
-
-    }
-
     @FXML
     protected void configMenu(ActionEvent event) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -360,11 +335,10 @@ public class Controller {
     Task<Integer> getVolume = new Task<Integer>() {
         @Override
         protected Integer call() throws Exception {
-            FloatControl x = sound("build/resources/main/sound/test.wav");
+            FloatControl x = Sound.sound("build/resources/main/sound/test.wav");
             while(open<2){
                 if(Volume!=(float)((x.getMinimum() * (1-(volSlider.getValue()/100))))){
-                   Volume =(float)((x.getMinimum() * (1-(volSlider.getValue()/100))));
-                    System.out.println(Volume);
+                    Volume =(float)((x.getMinimum() * (1-(volSlider.getValue()/100))));
                 }
                 try {
                     Thread.sleep(100);
@@ -375,5 +349,7 @@ public class Controller {
             return null;
         }
     };
+
+
 }
 

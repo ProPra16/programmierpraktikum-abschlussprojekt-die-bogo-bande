@@ -31,6 +31,8 @@ public class Controller {
     Path codePath = Paths.get("/tmp.java");
     Path testPath = Paths.get(Main.taskid + ".java");
 
+    private String s;
+
     @FXML
     private VBox Menu;
     @FXML
@@ -107,6 +109,8 @@ public class Controller {
                         continueButton.setDisable(false);
                         testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(e.getMessage()));
                         compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
+                        s="test";
+                        SaveData.saveToTextFile(Tests,s);
                         return true;
                     } else {
                         continueButton.setDisable(true);
@@ -139,6 +143,8 @@ public class Controller {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " Tests succeded");
+                        s="code";
+                        SaveData.saveToTextFile(Code,s);
                         return true;
                     }
                 }

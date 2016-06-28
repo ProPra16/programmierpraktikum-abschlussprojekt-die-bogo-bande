@@ -157,6 +157,7 @@ public class Controller {
             Tests.setDisable(true);
             Code.setDisable(false);
             continueButton.setDisable(true);
+
             compileMessage.setText("Write some Code!");
         } else if (compile(null) && tab_code.isSelected()) {
             tabs.getSelectionModel().select(tab_tests);
@@ -220,17 +221,25 @@ public class Controller {
     }
 
     Task<Integer> babyStepsTimer = new Task<Integer>() {
+        private int i;
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
         @Override
         protected Integer call() throws Exception {
             TaskDecoder tasks = new TaskDecoder();
-            int i;
             Sound countdownVol = null;
             while (!isCancelled()) {
+                babysteps.setFill(Color.BLACK);
                 for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
                     if (isCancelled()) {
                         break;
                     }
+
                     if (i == 10) {
+                        babysteps.setFill(Color.RED);
                         countdownVol = new Sound("build/resources/main/sound/countdown.wav");
                     }
                     if (!(countdownVol==null)){
@@ -238,7 +247,7 @@ public class Controller {
                         countdownVol.start();
                     }
 
-                    babysteps.setText("time: " + i + "s");
+                    babysteps.setText("Time: " + i + "s");
 
                     try {
                         Thread.sleep(1000);
@@ -252,7 +261,7 @@ public class Controller {
                     timeoverVol.setVolume(Volume.getVolume());
                     timeoverVol.start();
 
-                    babysteps.setText("time: " + i + "s");
+                    babysteps.setText("Time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }

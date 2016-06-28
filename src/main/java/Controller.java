@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sound.Sound;
+import sound.Volume;
 import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
@@ -23,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
-
-    private float Volume;
 
     private Stage stage = Main.primaryStage;
 
@@ -70,7 +70,6 @@ public class Controller {
 
     @FXML
     protected void initialize() {
-        Sound.getVol(this);
         initializeComb();
         design();
         stage.setOnCloseRequest(event -> {
@@ -196,6 +195,7 @@ public class Controller {
         configMenueWrapper.setLayoutY(-45);
 
         try {
+            volSlider.setValue(Volume.initVolume());
             tabs.setMaxWidth(tab_width);
             tabs.setMinWidth(tab_width);
             Tests.setMinWidth(tab_width);
@@ -224,17 +224,18 @@ public class Controller {
         protected Integer call() throws Exception {
             TaskDecoder tasks = new TaskDecoder();
             int i;
-            FloatControl countdownVol = null;
+            Sound countdownVol = null;
             while (!isCancelled()) {
                 for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
                     if (isCancelled()) {
                         break;
                     }
                     if (i == 10) {
-                        countdownVol = Sound.sound("build/resources/main/sound/countdown.wav");
+                        countdownVol = new Sound("build/resources/main/sound/countdown.wav");
                     }
                     if (!(countdownVol==null)){
-                        countdownVol.setValue(Volume);
+                        countdownVol.setVolume(Volume.getVolume());
+                        countdownVol.start();
                     }
 
                     babysteps.setText("time: " + i + "s");
@@ -246,12 +247,11 @@ public class Controller {
                         System.out.println("tasks over");
                     }
                 }
-                FloatControl timeoverVol = null;
                 if (i == 0) {
-                    timeoverVol = Sound.sound("build/resources/main/sound/over.wav");
-                    if (!(timeoverVol==null)) {
-                        timeoverVol.setValue(Volume);
-                    }
+                    Sound timeoverVol = new Sound("build/resources/main/sound/over.wav");
+                    timeoverVol.setVolume(Volume.getVolume());
+                    timeoverVol.start();
+
                     babysteps.setText("time: " + i + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
@@ -335,10 +335,9 @@ public class Controller {
     Task<Integer> getVolume = new Task<Integer>() {
         @Override
         protected Integer call() throws Exception {
-            FloatControl x = Sound.sound("build/resources/main/sound/test.wav");
             while(open<2){
-                if(Volume!=(float)((x.getMinimum() * (1-(volSlider.getValue()/100))))){
-                    Volume =(float)((x.getMinimum() * (1-(volSlider.getValue()/100))));
+                if(Volume.getVolume()!=(float)((Volume.getMinVol() * (1-(volSlider.getValue()/100))))){
+                    Volume.setVolume((float)((Volume.getMinVol() * (1-(volSlider.getValue()/100)))));
                 }
                 try {
                     Thread.sleep(100);
@@ -349,7 +348,5 @@ public class Controller {
             return null;
         }
     };
-
-
 }
 

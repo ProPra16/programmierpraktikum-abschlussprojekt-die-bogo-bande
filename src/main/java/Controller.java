@@ -30,10 +30,6 @@ import java.util.List;
 public class Controller {
 
     private Stage stage = Main.primaryStage;
-
-    Path codePath = Paths.get("/tmp.java");
-    Path testPath = Paths.get(Main.taskid + ".java");
-
     private String s;
 
     @FXML
@@ -196,8 +192,6 @@ public class Controller {
         compile.setGraphic(compileIcon);
         compile.setDisable(true);
         configMenu.setGraphic(configIcon);
-        //configMenu.setBorder(null);
-        //configMenu.setBackground(null);
         configMenu.setText("Settings");
         configMenueWrapper.setLayoutX(tab_width - 180);
         configMenu.setPrefWidth(125);
@@ -222,6 +216,7 @@ public class Controller {
             Code.setMinHeight(tab_height);
             Code.setText("");
             Tests.setText("");
+            combo.setLayoutX(tab_width - 160);
         } catch (Exception e) {
             System.out.println("ERROR");
         }

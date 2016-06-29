@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import loader.LoadCode;
+import loader.LoadTest;
 import loader.SaveData;
 import loader.TaskDecoder;
 import sound.Sound;
@@ -27,6 +29,7 @@ public class Controller {
 
     private Stage stage = Main.primaryStage;
     private String s;
+    private int time;
 
     @FXML
     private VBox Menu;
@@ -158,6 +161,11 @@ public class Controller {
             tabs.getSelectionModel().select(tab_code);
             Tests.setDisable(true);
             Code.setDisable(false);
+            try {
+                time = new TaskDecoder().getBabystepsTime(Main.taskid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             continueButton.setDisable(true);
 
             compileMessage.setText("Write some Code!");
@@ -165,6 +173,11 @@ public class Controller {
             tabs.getSelectionModel().select(tab_tests);
             Tests.setDisable(false);
             Code.setDisable(true);
+            try {
+                time = new TaskDecoder().getBabystepsTime(Main.taskid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             continueButton.setDisable(true);
         }
     }
@@ -221,11 +234,6 @@ public class Controller {
     }
 
     Task<Integer> babyStepsTimer = new Task<Integer>() {
-        private int i;
-
-        public void setI(int i) {
-            this.i = i;
-        }
 
         @Override
         protected Integer call() throws Exception {
@@ -233,12 +241,12 @@ public class Controller {
             Sound countdownVol = null;
             while (!isCancelled()) {
                 babysteps.setFill(Color.BLACK);
-                for (i = tasks.getBabystepsTime(Main.taskid); i > 0; i--) {
+                for (time = tasks.getBabystepsTime(Main.taskid); time > 0; time--) {
                     if (isCancelled()) {
                         break;
                     }
 
-                    if (i == 10) {
+                    if (time == 10) {
                         babysteps.setFill(Color.RED);
                         countdownVol = new Sound("build/resources/main/sound/countdown.wav");
                     }
@@ -247,7 +255,7 @@ public class Controller {
                         countdownVol.start();
                     }
 
-                    babysteps.setText("Time: " + i + "s");
+                    babysteps.setText("Time: " + time + "s");
 
                     try {
                         Thread.sleep(1000);
@@ -256,12 +264,12 @@ public class Controller {
                         System.out.println("tasks over");
                     }
                 }
-                if (i == 0) {
+                if (time == 0) {
                     Sound timeoverVol = new Sound("build/resources/main/sound/over.wav");
                     timeoverVol.setVolume(Volume.getVolume());
                     timeoverVol.start();
 
-                    babysteps.setText("Time: " + i + "s");
+                    babysteps.setText("Time: " + time + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
                 }
@@ -291,10 +299,11 @@ public class Controller {
             compileMessage.setText("Write a failing Test");
 
             if (Tests != null) {
-                System.out.println(Main.taskid);
                 if (Main.taskid == 0) {
+                    s = LoadCode.chooseFile(stage);
+                    System.out.println(s);
                     System.out.println("SAVIG");
-                    // LoadTest.loaddata(Tests,"test");
+                    LoadCode.loaddata(Tests,s);
                 } else {
                     Tests.setText(tasks.getTest(index));
                 }

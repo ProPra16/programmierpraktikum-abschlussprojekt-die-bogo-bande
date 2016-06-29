@@ -5,6 +5,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
@@ -117,6 +119,10 @@
                             majorTickUnit="10.0" max="100.0"
                             prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
                             showTickMarks="true"/>
+                    <LineChart fx:id="graph">
+                        <xAxis><NumberAxis label="Values for X-Axis" lowerBound="0" upperBound="3" tickUnit="1"/></xAxis>
+                        <yAxis><NumberAxis label="Values for Y-Axis" lowerBound="0" upperBound="3" tickUnit="1"/></yAxis>
+                    </LineChart>
                 </VBox>
             </children>
         </Pane>

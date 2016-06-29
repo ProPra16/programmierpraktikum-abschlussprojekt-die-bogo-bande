@@ -1,6 +1,10 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.control.TextArea;
@@ -70,7 +74,11 @@ public class Controller {
     @FXML
     private CheckBox check_the_baby;
 
+    @FXML
+    private LineChart<Integer, Double> graph;
+
     public int open = 0;
+    private LineChart.Series<Integer, Double> series1 = new LineChart.Series<Integer, Double>();
 
     @FXML
     protected void initialize() {
@@ -82,6 +90,18 @@ public class Controller {
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/config.cfg","ENABLE_BABYSTEPS"));
         status.setText("Select a Task");
+
+        ObservableList<XYChart.Series<Integer, Double>> lineChartData = FXCollections.observableArrayList();
+
+        series1.setName("Time");
+        series1.getData().add(new XYChart.Data<Integer, Double>(0, 1.0));
+        series1.getData().add(new XYChart.Data<Integer, Double>(1, 1.4));
+        series1.getData().add(new XYChart.Data<Integer, Double>(2, 1.9));
+        series1.getData().add(new XYChart.Data<Integer, Double>(3, 2.3));
+        series1.getData().add(new XYChart.Data<Integer, Double>(4, 0.5));
+        lineChartData.add(series1);
+        graph.setData(lineChartData);
+        graph.createSymbolsProperty();
     }
 
     @FXML

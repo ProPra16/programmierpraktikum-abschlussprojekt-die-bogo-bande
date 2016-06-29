@@ -29,7 +29,7 @@ public class Controller {
     private Stage stage = Main.primaryStage;
     private String s;
     private int time;
-    private enum Status {TEST,CODE,REFACTOR};
+    private enum Status {TEST,CODE,REFACTOR}
     @FXML
     private VBox Menu;
     @FXML
@@ -79,8 +79,7 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
-       status.setText(Status.TEST.toString());
-
+        status.setText("Select a Task");
     }
 
     @FXML
@@ -89,12 +88,14 @@ public class Controller {
             Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue() - 1;
             initializeTDDT(Main.taskid);
             combo.setDisable(true);
+            status.setFill(Color.RED);
+            status.setText(Status.TEST.toString());
         }
     }
 
     @FXML
     protected boolean compile(ActionEvent event) {
-        if (tab_tests.isSelected()) {
+        if (status.getText().equals(Status.TEST.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), Tests.getText(), true);
@@ -125,7 +126,37 @@ public class Controller {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (tab_code.isSelected()) {
+        } else if (status.getText().equals(Status.CODE.toString())) {
+            try {
+                TaskDecoder tasks = new TaskDecoder();
+                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), Tests.getText(), true);
+                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), Code.getText(), false);
+                JavaStringCompiler codeJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
+                codeJavaStringCompiler.compileAndRunTests();
+                if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
+                    compileMessage.setFill(Color.RED);
+                    continueButton.setDisable(true);
+                    compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
+                } else {
+                    if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
+                        codeJavaStringCompiler.compileAndRunTests();
+                        continueButton.setDisable(true);
+                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " Tests failed!");
+                        return false;
+                    } else {
+                        continueButton.setDisable(false);
+                        codeJavaStringCompiler.compileAndRunTests();
+                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " Tests succeded");
+                        s = "code";
+                        SaveData.saveToTextFile(Code, s);
+                        return true;
+                    }
+                }
+                return false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (status.getText().equals(Status.REFACTOR.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), Tests.getText(), true);
@@ -161,8 +192,9 @@ public class Controller {
 
     @FXML
     protected void continueTab(ActionEvent event) {
-        if (compile(null) && status.getText().equals("TEST")) {
+        if (compile(null) && status.getText().equals(Status.TEST.toString())) {
             status.setText(Status.CODE.toString());
+            status.setFill(Color.GREEN);
             tabs.getSelectionModel().select(tab_code);
             Tests.setDisable(true);
             Code.setDisable(false);
@@ -175,17 +207,19 @@ public class Controller {
                 e.printStackTrace();
             }
 
-        } else if (compile(null) && status.getText().equals("CODE")) {
+        } else if (compile(null) && status.getText().equals(Status.CODE.toString())) {
             status.setText(Status.REFACTOR.toString());
-            tabs.getSelectionModel().select(tab_tests);
+            status.setFill(Color.BLACK);
+            tabs.getSelectionModel().select((int)(Math.random()*2));
             Tests.setDisable(false);
-            Code.setDisable(true);
+            Code.setDisable(false);
             continueButton.setDisable(true);
 
             babyStepsTimer.cancel();
 
-        } else if (compile(null) && status.getText().equals("REFACTOR")) {
+        } else if (compile(null) && status.getText().equals(Status.REFACTOR.toString())) {
             status.setText(Status.TEST.toString());
+            status.setFill(Color.RED);
             tabs.getSelectionModel().select(tab_tests);
             Tests.setDisable(false);
             Code.setDisable(true);

@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import loader.LoadCode;
+import loader.LoadTest;
 import loader.SaveData;
 import loader.TaskDecoder;
 import sound.Sound;
@@ -298,11 +300,19 @@ public class Controller {
             compileMessage.setText("Write a failing Test");
 
             if (Tests != null) {
-                Tests.setText(tasks.getTest(index));
+                if(Main.taskid==1){
+                    LoadTest.loaddata(Tests,"test");
+                }else {
+                    Tests.setText(tasks.getTest(index));
+                }
             }
 
             if (Code != null) {
-                Code.setText(tasks.getClass(index));
+                if(Main.taskid==1){
+                    LoadCode.loaddata(Tests,"code");
+                }else {
+                    Code.setText(tasks.getClass(index));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

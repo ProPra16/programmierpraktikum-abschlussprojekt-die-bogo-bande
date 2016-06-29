@@ -12,7 +12,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import loader.LoadCode;
-import loader.LoadTest;
 import loader.SaveData;
 import loader.TaskDecoder;
 import sound.Sound;
@@ -297,24 +296,16 @@ public class Controller {
 
             compileMessage.setFill(Color.BLACK);
             compileMessage.setText("Write a failing Test");
-
-            if (Tests != null) {
-                if (Main.taskid == 0) {
-                    s = LoadCode.chooseFile(stage);
-                    System.out.println(s);
-                    System.out.println("SAVIG");
-                    LoadCode.loaddata(Tests,s);
-                } else {
-                    Tests.setText(tasks.getTest(index));
-                }
+            if (Main.taskid == 0) {
+                s = LoadCode.chooseFile(stage);
+                LoadCode.loaddata(Tests, s);
+            } else {
+                Tests.setText(tasks.getTest(index));
             }
-
-            if (Code != null) {
-                if (Main.taskid == 0) {
-                    //  LoadCode.loaddata(Tests,"code");
-                } else {
-                    Code.setText(tasks.getClass(index));
-                }
+            if (Main.taskid == 0) {
+                LoadCode.loaddata(Code,s);
+            } else {
+                Code.setText(tasks.getClass(index));
             }
         } catch (Exception e) {
             e.printStackTrace();

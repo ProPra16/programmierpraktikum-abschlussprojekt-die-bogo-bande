@@ -11,7 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import loader.LoadCode;
+import loader.LoadData;
+import loader.Config;
 import loader.SaveData;
 import loader.TaskDecoder;
 import sound.Sound;
@@ -79,6 +80,7 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
+        check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/config.cfg","ENABLE_BABYSTEPS"));
         status.setText("Select a Task");
     }
 
@@ -294,9 +296,9 @@ public class Controller {
                         break;
                     }
 
-                    if (time == 10) {
+                    if (time == 20) {
                         babysteps.setFill(Color.RED);
-                        countdownVol = new Sound("build/resources/main/sound/countdown.wav");
+                        countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
                     }
                     if (!(countdownVol == null)) {
                         countdownVol.setVolume(Volume.getVolume());
@@ -313,10 +315,7 @@ public class Controller {
                     }
                 }
                 if (time == 0) {
-                    Sound timeoverVol = new Sound("build/resources/main/sound/over.wav");
-                    timeoverVol.setVolume(Volume.getVolume());
-                    timeoverVol.start();
-
+                    countdownVol.setVolume(Volume.getMinVol());
                     babysteps.setText("Time: " + time + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);
@@ -346,13 +345,13 @@ public class Controller {
             compileMessage.setFill(Color.BLACK);
             compileMessage.setText("Write a failing Test");
             if (Main.taskid == 0) {
-                s = LoadCode.chooseFile(stage);
-                LoadCode.loaddata(Tests, s);
+                s = LoadData.chooseFile(stage);
+                LoadData.loaddata(Tests, s);
             } else {
                 Tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
-                LoadCode.loaddata(Code,s);
+                LoadData.loaddata(Code,s);
             } else {
                 Code.setText(tasks.getClass(index));
             }
@@ -393,6 +392,7 @@ public class Controller {
             open++;
         } else {
             Menu.setVisible(false);
+            Config.saveConfig("build/resources/main/config.cfg", "ENABLE_BABYSTEPS", check_the_baby.isSelected());
             getVolume.cancel();
             open++;
             open = 0;

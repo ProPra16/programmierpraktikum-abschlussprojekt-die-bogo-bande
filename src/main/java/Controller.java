@@ -295,16 +295,18 @@ public class Controller {
             compileMessage.setText("Write a failing Test");
 
             if (Tests != null) {
-                if(Main.taskid==1){
-                    LoadTest.loaddata(Tests,"test");
+                System.out.println(Main.taskid);
+                if(Main.taskid==0){
+                    System.out.println("SAVIG");
+                   // LoadTest.loaddata(Tests,"test");
                 }else {
                     Tests.setText(tasks.getTest(index));
                 }
             }
 
             if (Code != null) {
-                if(Main.taskid==1){
-                    LoadCode.loaddata(Tests,"code");
+                if(Main.taskid==0){
+                  //  LoadCode.loaddata(Tests,"code");
                 }else {
                     Code.setText(tasks.getClass(index));
                 }

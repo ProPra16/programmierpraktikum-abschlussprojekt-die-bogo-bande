@@ -1,14 +1,14 @@
 <tasks>
     <exercise name="Old">
         <description>fileload</description>
-        <class name="Oldclass">
+        <class name="TestCode">
             public class TestCode{
             public static String convert(){
             return null;
             }
             }
         </class>
-        <test name="Oldtest">
+        <test name="TestTest">
             import static org.junit.Assert.*;
             import org.junit.Test;
 

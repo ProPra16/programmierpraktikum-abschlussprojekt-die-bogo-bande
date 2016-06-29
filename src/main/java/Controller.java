@@ -11,8 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import loader.LoadCode;
-import loader.LoadTest;
 import loader.SaveData;
 import loader.TaskDecoder;
 import sound.Sound;
@@ -22,8 +20,6 @@ import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
 import java.awt.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,10 +78,11 @@ public class Controller {
 
     @FXML
     protected void task(ActionEvent event) {
-        if (combo.getSelectionModel().selectedIndexProperty().intValue() > 0)
-            initializeTDDT(combo.getSelectionModel().selectedIndexProperty().intValue() - 1);
-        Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue() - 1;
-        combo.setDisable(true);
+        if (combo.getSelectionModel().selectedIndexProperty().intValue() > 0) {
+            Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue() - 1;
+            initializeTDDT(Main.taskid);
+            combo.setDisable(true);
+        }
     }
 
     @FXML
@@ -108,8 +105,8 @@ public class Controller {
                         continueButton.setDisable(false);
                         testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(e.getMessage()));
                         compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
-                        s="test";
-                        SaveData.saveToTextFile(Tests,s);
+                        s = "test";
+                        SaveData.saveToTextFile(Tests, s);
                         return true;
                     } else {
                         continueButton.setDisable(true);
@@ -142,8 +139,8 @@ public class Controller {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " Tests succeded");
-                        s="code";
-                        SaveData.saveToTextFile(Code,s);
+                        s = "code";
+                        SaveData.saveToTextFile(Code, s);
                         return true;
                     }
                 }
@@ -245,7 +242,7 @@ public class Controller {
                         babysteps.setFill(Color.RED);
                         countdownVol = new Sound("build/resources/main/sound/countdown.wav");
                     }
-                    if (!(countdownVol==null)){
+                    if (!(countdownVol == null)) {
                         countdownVol.setVolume(Volume.getVolume());
                         countdownVol.start();
                     }
@@ -274,7 +271,6 @@ public class Controller {
     };
 
 
-
     protected void initializeTDDT(int index) {
 
         try {
@@ -296,18 +292,18 @@ public class Controller {
 
             if (Tests != null) {
                 System.out.println(Main.taskid);
-                if(Main.taskid==0){
+                if (Main.taskid == 0) {
                     System.out.println("SAVIG");
-                   // LoadTest.loaddata(Tests,"test");
-                }else {
+                    // LoadTest.loaddata(Tests,"test");
+                } else {
                     Tests.setText(tasks.getTest(index));
                 }
             }
 
             if (Code != null) {
-                if(Main.taskid==0){
-                  //  LoadCode.loaddata(Tests,"code");
-                }else {
+                if (Main.taskid == 0) {
+                    //  LoadCode.loaddata(Tests,"code");
+                } else {
                     Code.setText(tasks.getClass(index));
                 }
             }
@@ -342,7 +338,7 @@ public class Controller {
         Menu.setLayoutX(-Menu.getWidth() / 2);
         Menu.setLayoutY((height - Menu.getHeight()) / 3);
         Menu.setVisible(true);
-        if (open==0) {
+        if (open == 0) {
             Menu.setVisible(true);
             new Thread(getVolume).start();
             open++;
@@ -350,16 +346,16 @@ public class Controller {
             Menu.setVisible(false);
             getVolume.cancel();
             open++;
-            open=0;
+            open = 0;
         }
     }
 
     private Task<Integer> getVolume = new Task<Integer>() {
         @Override
         protected Integer call() throws Exception {
-            while(open<2){
-                if(Volume.getVolume()!=(float)((Volume.getMinVol() * (1-(volSlider.getValue()/100))))){
-                    Volume.setVolume((float)((Volume.getMinVol() * (1-(volSlider.getValue()/100)))));
+            while (open < 2) {
+                if (Volume.getVolume() != (float) ((Volume.getMinVol() * (1 - (volSlider.getValue() / 100))))) {
+                    Volume.setVolume((float) ((Volume.getMinVol() * (1 - (volSlider.getValue() / 100)))));
                 }
                 try {
                     Thread.sleep(100);

@@ -25,6 +25,11 @@
                 -fx-font-size: 14px;
          }
 
+ #status{
+                 -fx-text-fill: #242d35;
+                 -fx-font-size: 20px;
+ }
+
 .tab{    -fx-background-color:
              rgba(0,0,0,0.08),
              linear-gradient(#9a9a9a, #909090),
@@ -41,3 +46,4 @@
             linear-gradient(#9a9a9a, #909090),
             linear-gradient(white 0%, #f3f3f3 50%, #ececec 51%, #f2f2f2 100%);
 }
+

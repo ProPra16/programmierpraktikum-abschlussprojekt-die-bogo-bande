@@ -64,6 +64,14 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                     </padding>
                 </VBox>
+                <VBox layoutX="200" layoutY="10.0" prefHeight="30.0" prefWidth="469.0">
+                    <children>
+                        <Text id="status" fx:id="status" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </VBox>
                 <ComboBox id="combo" fx:id="combo" editable="false" layoutY="7.0" onAction="#task">
                     <items>
                         <FXCollections fx:factory="observableArrayList">

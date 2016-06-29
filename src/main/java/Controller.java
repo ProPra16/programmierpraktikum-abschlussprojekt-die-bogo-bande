@@ -29,7 +29,7 @@ public class Controller {
     private Stage stage = Main.primaryStage;
     private String s;
     private int time;
-
+    private enum Status {TEST,CODE,REFACTOR};
     @FXML
     private VBox Menu;
     @FXML
@@ -42,6 +42,8 @@ public class Controller {
     private Button continueButton;
     @FXML
     private Text compileMessage;
+    @FXML
+    private Text status;
     @FXML
     private TabPane tabs;
     @FXML
@@ -77,6 +79,7 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
+       status.setText(Status.TEST.toString());
 
     }
 
@@ -158,28 +161,38 @@ public class Controller {
 
     @FXML
     protected void continueTab(ActionEvent event) {
-        if (compile(null) && tab_tests.isSelected()) {
+        if (compile(null) && status.getText().equals("TEST")) {
+            status.setText(Status.CODE.toString());
             tabs.getSelectionModel().select(tab_code);
             Tests.setDisable(true);
             Code.setDisable(false);
+            continueButton.setDisable(true);
+            compileMessage.setText("Write some Code!");
+
             try {
                 time = new TaskDecoder().getBabystepsTime(Main.taskid);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            continueButton.setDisable(true);
 
-            compileMessage.setText("Write some Code!");
-        } else if (compile(null) && tab_code.isSelected()) {
+        } else if (compile(null) && status.getText().equals("CODE")) {
+            status.setText(Status.REFACTOR.toString());
             tabs.getSelectionModel().select(tab_tests);
             Tests.setDisable(false);
             Code.setDisable(true);
-            try {
-                time = new TaskDecoder().getBabystepsTime(Main.taskid);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             continueButton.setDisable(true);
+
+            babyStepsTimer.cancel();
+
+        } else if (compile(null) && status.getText().equals("REFACTOR")) {
+            status.setText(Status.TEST.toString());
+            tabs.getSelectionModel().select(tab_tests);
+            Tests.setDisable(false);
+            Code.setDisable(true);
+            continueButton.setDisable(true);
+
+            new Thread(babyStepsTimer).start();
+
         }
     }
 

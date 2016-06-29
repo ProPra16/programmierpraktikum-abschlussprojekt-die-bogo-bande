@@ -21,6 +21,10 @@
 
             }
         </test>
+        <config>
+            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
+            <timetracking value="True" />
+        </config>
     </exercise>
     <exercise name="Recent Task">
         <description>fileload</description>
@@ -44,6 +48,10 @@
 
             }
         </test>
+        <config>
+            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
+            <timetracking value="True" />
+        </config>
     </exercise>
     <exercise name="Test">
         <description>Test ya Shit</description>

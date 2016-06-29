@@ -104,12 +104,11 @@
                     </children>
                 </VBox>
                 <VBox fx:id="Menu" prefWidth="300" prefHeight="400" visible="false">
-                    <children>
-                        <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="332.0"
-                                majorTickUnit="10.0" max="100.0"
-                                prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
-                                showTickMarks="true"/>
-                    </children>
+                    <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled"/>
+                    <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
+                            majorTickUnit="10.0" max="100.0"
+                            prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
+                            showTickMarks="true"/>
                 </VBox>
             </children>
         </Pane>

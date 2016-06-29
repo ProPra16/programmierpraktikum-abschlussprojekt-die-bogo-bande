@@ -64,6 +64,8 @@ public class Controller {
     private VBox configMenueWrapper;
     @FXML
     private ComboBox<String> combo;
+    @FXML
+    private CheckBox check_the_baby;
 
     public int open = 0;
 
@@ -286,7 +288,7 @@ public class Controller {
             tabs.setDisable(false);
             tabs.getSelectionModel().selectFirst();
             TaskDecoder tasks = new TaskDecoder();
-            if (tasks.isBabysteps(index)) new Thread(babyStepsTimer).start();
+            if (tasks.isBabysteps(index) && check_the_baby.isSelected()) new Thread(babyStepsTimer).start();
             else babysteps.setVisible(false);
             task_name.setText(tasks.getExcercise(index));
             task_discripton.setText(tasks.getDescription(index));

@@ -29,7 +29,8 @@ public class Controller {
     private Stage stage = Main.primaryStage;
     private String s;
     private int time;
-    private enum Status {TEST,CODE,REFACTOR};
+    private enum Status {TEST,CODE,REFACTOR}
+
     @FXML
     private VBox Menu;
     @FXML

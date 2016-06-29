@@ -220,7 +220,6 @@ public class Controller {
             Code.setMinHeight(tab_height);
             Code.setText("");
             Tests.setText("");
-            combo.setLayoutX(tab_width - 160);
         } catch (Exception e) {
             System.out.println("ERROR");
         }
@@ -348,7 +347,7 @@ public class Controller {
         }
     }
 
-    Task<Integer> getVolume = new Task<Integer>() {
+    private Task<Integer> getVolume = new Task<Integer>() {
         @Override
         protected Integer call() throws Exception {
             while(open<2){

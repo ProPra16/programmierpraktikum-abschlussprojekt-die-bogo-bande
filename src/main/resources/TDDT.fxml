@@ -64,7 +64,11 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                     </padding>
                 </VBox>
-                <ComboBox id="combo" fx:id="combo" editable="false" layoutY="7.0" onAction="#task">
+            </children>
+        </Pane>
+        <Pane GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <children>
+                <ComboBox id="combo" fx:id="combo" editable="false" layoutX="16.0" layoutY="1.0" onAction="#task">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                         </FXCollections>

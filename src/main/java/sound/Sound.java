@@ -8,7 +8,6 @@ import java.io.File;
 
 public class Sound {
 
-    private String soundFile;
 
     private Clip soundClip;
 
@@ -16,8 +15,8 @@ public class Sound {
 
     public Sound(String soundFile) {
         try {
-            this.soundFile = "./" + soundFile;
-            File file = new File(this.soundFile);
+            soundFile = "./" + soundFile;
+            File file = new File(soundFile);
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(file.toURI().toURL());
             soundClip = AudioSystem.getClip();
             soundClip.open(audioIn);
@@ -31,21 +30,11 @@ public class Sound {
         soundClip.start();
     }
 
-    public void stop() {
-        soundClip.stop();
-    }
-
-    public void mute() { setVolume(volume.getMinimum()); }
-
     public void setVolume(float volume) {
         this.volume.setValue(volume);
     }
 
-    public float getVolume() {
-        return volume.getValue();
-    }
-
-    public FloatControl getVolumeControl(){
+    FloatControl getVolumeControl(){
         return volume;
     }
 }

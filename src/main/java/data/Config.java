@@ -6,13 +6,11 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Created by root on 29.06.16.
- */
 public class Config {
-    public static float loadFloatFromConfig(String path, String h){
-        Path configPath = Paths.get(path);
-        try {
+
+    private static Path configPath = Paths.get("build/resources/main/data/config.cfg");
+
+    public static float loadFloatFromConfig(String h){try {
             List<String> config = Files.readAllLines(configPath);
             Optional<String> optionalObjectSoundvolume = config.stream().filter(s -> s.contains(h)).map(s -> s).findFirst();
             if(!optionalObjectSoundvolume.isPresent())return -10;
@@ -25,8 +23,7 @@ public class Config {
         return 0;
     }
 
-    public static boolean loadBoolFromConfig(String path, String h){
-        Path configPath = Paths.get(path);
+    public static boolean loadBoolFromConfig(String h){
         try {
             List<String> config = Files.readAllLines(configPath);
             Optional<String> optionalObjectSoundvolume = config.stream().filter(s -> s.contains(h)).map(s -> s).findFirst();
@@ -40,9 +37,7 @@ public class Config {
         return false;
     }
 
-    public static void saveConfig(String path,String h,float f){
-        Path configPath = Paths.get(path);
-        try {
+    public static void saveConfig(String h,float f){try {
             List<String> config = Files.readAllLines(configPath);
             Optional<String> optionalObjectSoundvolume = config.stream().filter(s -> s.contains(h)).map(s -> s).findFirst();
             if(optionalObjectSoundvolume.isPresent()) {
@@ -57,8 +52,7 @@ public class Config {
         }
     }
 
-    public static void saveConfig(String path,String h,boolean b){
-        Path configPath = Paths.get(path);
+    public static void saveConfig(String h,boolean b){
         try {
             List<String> config = Files.readAllLines(configPath);
             Optional<String> optionalObjectSoundvolume = config.stream().filter(s -> s.contains(h)).map(s -> s).findFirst();

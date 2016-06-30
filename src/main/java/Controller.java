@@ -74,8 +74,8 @@ public class Controller {
     @FXML
     private LineChart<Integer, Double> graph;
 
-    public int open = 0;
-    private LineChart.Series<Integer, Double> series1 = new LineChart.Series<Integer, Double>();
+    private int open = 0;
+    private LineChart.Series<Integer, Double> series1 = new LineChart.Series<>();
 
     @FXML
     protected void initialize() {
@@ -85,17 +85,17 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
-        check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/data/config.cfg", "ENABLE_BABYSTEPS"));
+        check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
         status.setText("Select a Task");
 
         ObservableList<XYChart.Series<Integer, Double>> lineChartData = FXCollections.observableArrayList();
 
         series1.setName("Time");
-        series1.getData().add(new XYChart.Data<Integer, Double>(0, 1.0));
-        series1.getData().add(new XYChart.Data<Integer, Double>(1, 1.4));
-        series1.getData().add(new XYChart.Data<Integer, Double>(2, 1.9));
-        series1.getData().add(new XYChart.Data<Integer, Double>(3, 2.3));
-        series1.getData().add(new XYChart.Data<Integer, Double>(4, 0.5));
+        series1.getData().add(new XYChart.Data<>(0, 1.0));
+        series1.getData().add(new XYChart.Data<>(1, 1.4));
+        series1.getData().add(new XYChart.Data<>(2, 1.9));
+        series1.getData().add(new XYChart.Data<>(3, 2.3));
+        series1.getData().add(new XYChart.Data<>(4, 0.5));
         lineChartData.add(series1);
         graph.setData(lineChartData);
         graph.createSymbolsProperty();
@@ -248,7 +248,7 @@ public class Controller {
         }
     }
 
-    protected void design() {
+    private void design() {
         tabs.setDisable(true);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -299,7 +299,7 @@ public class Controller {
 
     }
 
-    Task<Integer> babyStepsTimer = new Task<Integer>() {
+    private Task<Integer> babyStepsTimer = new Task<Integer>() {
 
         @Override
         protected Integer call() throws Exception {
@@ -342,7 +342,7 @@ public class Controller {
     };
 
 
-    protected void initializeTDDT(int index) {
+    private void initializeTDDT(int index) {
 
         try {
             compile.setDisable(false);
@@ -352,7 +352,6 @@ public class Controller {
             TaskDecoder tasks = new TaskDecoder();
             if (tasks.isBabysteps(index) && check_the_baby.isSelected()) new Thread(babyStepsTimer).start();
             else babysteps.setVisible(false);
-            ;
             code.setDisable(true);
             tests.setDisable(false);
             continueButton.setDisable(true);
@@ -375,7 +374,7 @@ public class Controller {
         }
     }
 
-    protected void initializeComb() {
+    private void initializeComb() {
         try {
             TaskDecoder tasks = new TaskDecoder();
             int i = tasks.getTasks().getLength();
@@ -407,7 +406,7 @@ public class Controller {
             open++;
         } else {
             Menu.setVisible(false);
-            Config.saveConfig("build/resources/main/data/config.cfg", "ENABLE_BABYSTEPS", check_the_baby.isSelected());
+            Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
             getVolume.cancel();
             open++;
             open = 0;

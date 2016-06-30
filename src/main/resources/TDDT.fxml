@@ -24,7 +24,7 @@
                     <content>
                         <AnchorPane>
                             <children>
-                                <TextArea fx:id="Tests">
+                                <TextArea fx:id="tests">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
@@ -37,7 +37,7 @@
                     <content>
                         <AnchorPane>
                             <children>
-                                <TextArea fx:id="Code">
+                                <TextArea fx:id="code">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
@@ -50,23 +50,7 @@
         </TabPane>
         <Pane prefHeight="200.0" prefWidth="200.0">
             <children>
-                <VBox layoutY="2.0" prefHeight="15.0" prefWidth="469.0">
-                    <children>
-                        <Text fx:id="task_name" strokeType="OUTSIDE" strokeWidth="0.0" text="Select a Task"/>
-                    </children>
-                    <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </padding>
-                </VBox>
-                <VBox layoutY="17.0" prefHeight="30.0" prefWidth="469.0">
-                    <children>
-                        <Text fx:id="task_discripton" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
-                    </children>
-                    <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </padding>
-                </VBox>
-                <VBox layoutX="200" layoutY="10.0" prefHeight="30.0" prefWidth="469.0">
+                <VBox layoutX="2" layoutY="10.0" prefHeight="30.0" prefWidth="469.0">
                     <children>
                         <Text id="status" fx:id="status" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
                     </children>
@@ -103,9 +87,16 @@
                         </Button>
                     </children>
                 </VBox>
+                <VBox layoutX="16.0" layoutY="136.0" prefHeight="26.0" prefWidth="120.0">
+                    <children>
+                        <Button fx:id="stats" mnemonicParsing="false" prefWidth="120.0"
+                                text="Stats"><!--onAction="#showStats"!-->
+                        </Button>
+                    </children>
+                </VBox>
                 <Text fx:id="babysteps" layoutX="16.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text=""
                       wrappingWidth="290.0"/>
-                <Text fx:id="compileMessage" layoutX="16.0" layoutY="136.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                <Text fx:id="compileMessage" layoutX="16.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0"
                       text="" wrappingWidth="290.0"/>
                 <VBox fx:id="configMenueWrapper">
                     <children>

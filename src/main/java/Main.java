@@ -4,8 +4,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.awt.*;
-
 public class Main extends Application {
 
     public static Stage primaryStage;

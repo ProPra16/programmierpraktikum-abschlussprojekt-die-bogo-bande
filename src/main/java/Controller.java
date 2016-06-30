@@ -1,3 +1,6 @@
+import data.Config;
+import data.Saves;
+import data.TaskDecoder;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -15,10 +18,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import loader.LoadData;
-import loader.Config;
-import loader.SaveData;
-import loader.TaskDecoder;
 import sound.Sound;
 import sound.Volume;
 import vk.core.api.CompilationUnit;
@@ -34,7 +33,9 @@ public class Controller {
     private Stage stage = Main.primaryStage;
     private String s;
     private int time;
-    private enum Status {TEST,CODE,REFACTOR}
+
+    private enum Status {TEST, CODE, REFACTOR}
+
     @FXML
     private VBox Menu;
     @FXML
@@ -56,15 +57,11 @@ public class Controller {
     @FXML
     private Tab tab_code;
     @FXML
-    private Text task_name;
-    @FXML
-    private Text task_discripton;
-    @FXML
     private Text babysteps;
     @FXML
-    private TextArea Code;
+    private TextArea code;
     @FXML
-    private TextArea Tests;
+    private TextArea tests;
     @FXML
     private Pane button_pane;
     @FXML
@@ -88,8 +85,10 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
-        check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/config.cfg","ENABLE_BABYSTEPS"));
+        check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/config.cfg", "ENABLE_BABYSTEPS"));
         status.setText("Select a Task");
+
+        System.out.println(javafx.scene.text.Font.getFamilies());
 
         ObservableList<XYChart.Series<Integer, Double>> lineChartData = FXCollections.observableArrayList();
 
@@ -120,8 +119,8 @@ public class Controller {
         if (status.getText().equals(Status.TEST.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
-                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), Tests.getText(), true);
-                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), Code.getText(), false);
+                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
+                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler testJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 testJavaStringCompiler.compileAndRunTests();
                 System.out.println();
@@ -136,7 +135,7 @@ public class Controller {
                         testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(e.getMessage()));
                         compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
                         s = "test";
-                        SaveData.saveToTextFile(Tests, s);
+                        Saves.saveData(tests, s);
                         return true;
                     } else {
                         continueButton.setDisable(true);
@@ -151,8 +150,8 @@ public class Controller {
         } else if (status.getText().equals(Status.CODE.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
-                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), Tests.getText(), true);
-                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), Code.getText(), false);
+                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
+                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler codeJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 codeJavaStringCompiler.compileAndRunTests();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
@@ -163,14 +162,14 @@ public class Controller {
                     if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         codeJavaStringCompiler.compileAndRunTests();
                         continueButton.setDisable(true);
-                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " Tests failed!");
+                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " tests failed!");
                         return false;
                     } else {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
-                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " Tests succeded");
+                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
                         s = "code";
-                        SaveData.saveToTextFile(Code, s);
+                        Saves.saveData(code, s);
                         return true;
                     }
                 }
@@ -181,8 +180,8 @@ public class Controller {
         } else if (status.getText().equals(Status.REFACTOR.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
-                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), Tests.getText(), true);
-                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), Code.getText(), false);
+                CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
+                CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler codeJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 codeJavaStringCompiler.compileAndRunTests();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
@@ -193,14 +192,14 @@ public class Controller {
                     if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         codeJavaStringCompiler.compileAndRunTests();
                         continueButton.setDisable(true);
-                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " Tests failed!");
+                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " tests failed!");
                         return false;
                     } else {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
-                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " Tests succeded");
+                        compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
                         s = "code";
-                        SaveData.saveToTextFile(Code, s);
+                        Saves.saveData(code, s);
                         return true;
                     }
                 }
@@ -218,10 +217,10 @@ public class Controller {
             status.setText(Status.CODE.toString());
             status.setFill(Color.GREEN);
             tabs.getSelectionModel().select(tab_code);
-            Tests.setDisable(true);
-            Code.setDisable(false);
+            tests.setDisable(true);
+            code.setDisable(false);
             continueButton.setDisable(true);
-            compileMessage.setText("Write some Code!");
+            compileMessage.setText("Write some code!");
 
             try {
                 time = new TaskDecoder().getBabystepsTime(Main.taskid);
@@ -232,9 +231,9 @@ public class Controller {
         } else if (compile(null) && status.getText().equals(Status.CODE.toString())) {
             status.setText(Status.REFACTOR.toString());
             status.setFill(Color.BLACK);
-            tabs.getSelectionModel().select((int)(Math.random()*2));
-            Tests.setDisable(false);
-            Code.setDisable(false);
+            tabs.getSelectionModel().select((int) (Math.random() * 2));
+            tests.setDisable(false);
+            code.setDisable(false);
             continueButton.setDisable(true);
 
             babyStepsTimer.cancel();
@@ -243,8 +242,8 @@ public class Controller {
             status.setText(Status.TEST.toString());
             status.setFill(Color.RED);
             tabs.getSelectionModel().select(tab_tests);
-            Tests.setDisable(false);
-            Code.setDisable(true);
+            tests.setDisable(false);
+            code.setDisable(true);
             continueButton.setDisable(true);
 
             new Thread(babyStepsTimer).start();
@@ -282,20 +281,20 @@ public class Controller {
             volSlider.setValue(Volume.initVolume());
             tabs.setMaxWidth(tab_width);
             tabs.setMinWidth(tab_width);
-            Tests.setMinWidth(tab_width);
-            Tests.setMaxWidth(tab_width);
-            Code.setMinWidth(tab_width);
-            Code.setMaxWidth(tab_width);
+            tests.setMinWidth(tab_width);
+            tests.setMaxWidth(tab_width);
+            code.setMinWidth(tab_width);
+            code.setMaxWidth(tab_width);
             button_pane.setMaxWidth(tab_width);
             button_pane.setMinWidth(tab_width);
             tabs.setMaxHeight(tab_height);
             tabs.setMinHeight(tab_height);
-            Tests.setMaxHeight(tab_height);
-            Tests.setMinHeight(tab_height);
-            Code.setMaxHeight(tab_height);
-            Code.setMinHeight(tab_height);
-            Code.setText("");
-            Tests.setText("");
+            tests.setMaxHeight(tab_height);
+            tests.setMinHeight(tab_height);
+            code.setMaxHeight(tab_height);
+            code.setMinHeight(tab_height);
+            code.setText("");
+            tests.setText("");
             combo.setLayoutX(tab_width - 160);
         } catch (Exception e) {
             System.out.println("ERROR");
@@ -356,24 +355,23 @@ public class Controller {
             TaskDecoder tasks = new TaskDecoder();
             if (tasks.isBabysteps(index) && check_the_baby.isSelected()) new Thread(babyStepsTimer).start();
             else babysteps.setVisible(false);
-            task_name.setText(tasks.getExcercise(index));
-            task_discripton.setText(tasks.getDescription(index));
-            Code.setDisable(true);
-            Tests.setDisable(false);
+            ;
+            code.setDisable(true);
+            tests.setDisable(false);
             continueButton.setDisable(true);
 
             compileMessage.setFill(Color.BLACK);
             compileMessage.setText("Write a failing Test");
             if (Main.taskid == 0) {
-                s = LoadData.chooseFile(stage);
-                LoadData.loaddata(Tests, s);
+                s = Saves.chooseFile(stage);
+                Saves.loadData(tests, s);
             } else {
-                Tests.setText(tasks.getTest(index));
+                tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
-                LoadData.loaddata(Code,s);
+                Saves.loadData(code, s);
             } else {
-                Code.setText(tasks.getClass(index));
+                code.setText(tasks.getClass(index));
             }
         } catch (Exception e) {
             e.printStackTrace();

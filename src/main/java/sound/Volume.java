@@ -1,6 +1,6 @@
 package sound;
 
-import loader.Config;
+import data.Config;
 
 import javax.sound.sampled.FloatControl;
 

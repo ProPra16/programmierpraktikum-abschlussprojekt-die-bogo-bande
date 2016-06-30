@@ -35,9 +35,7 @@ public class Sound {
         soundClip.stop();
     }
 
-    public void mute() {
-        volume.setValue(volume.getMinimum());
-    }
+    public void mute() { setVolume(volume.getMinimum()); }
 
     public void setVolume(float volume) {
         this.volume.setValue(volume);

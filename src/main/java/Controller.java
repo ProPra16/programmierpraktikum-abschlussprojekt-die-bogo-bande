@@ -85,10 +85,8 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
-        check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/config.cfg", "ENABLE_BABYSTEPS"));
+        check_the_baby.setSelected(Config.loadBoolFromConfig("build/resources/main/data/config.cfg", "ENABLE_BABYSTEPS"));
         status.setText("Select a Task");
-
-        System.out.println(javafx.scene.text.Font.getFamilies());
 
         ObservableList<XYChart.Series<Integer, Double>> lineChartData = FXCollections.observableArrayList();
 
@@ -123,7 +121,6 @@ public class Controller {
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler testJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 testJavaStringCompiler.compileAndRunTests();
-                System.out.println();
                 if (testJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
@@ -132,7 +129,7 @@ public class Controller {
                     compileMessage.setFill(Color.GREEN);
                     if (testJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         continueButton.setDisable(false);
-                        testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(e.getMessage()));
+                        testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(/*e.getMessage()*/));
                         compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
                         s = "test";
                         Saves.saveData(tests, s);
@@ -410,7 +407,7 @@ public class Controller {
             open++;
         } else {
             Menu.setVisible(false);
-            Config.saveConfig("build/resources/main/config.cfg", "ENABLE_BABYSTEPS", check_the_baby.isSelected());
+            Config.saveConfig("build/resources/main/data/config.cfg", "ENABLE_BABYSTEPS", check_the_baby.isSelected());
             getVolume.cancel();
             open++;
             open = 0;

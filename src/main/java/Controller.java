@@ -331,7 +331,9 @@ public class Controller {
                     }
                 }
                 if (time == 0) {
-                    countdownVol.setVolume(Volume.getMinVol());
+                    if (countdownVol != null) {
+                        countdownVol.setVolume(Volume.getMinVol());
+                    }
                     babysteps.setText("Time: " + time + "s");
                     if (!compile(null)) initializeTDDT(Main.taskid);
                     else continueTab(null);

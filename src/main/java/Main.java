@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    public static Stage primaryStage;
-    public static int taskid;
+    static Stage primaryStage;
+    static int taskid;
 
     public static void main(String[] args) {
         launch(args);
@@ -15,7 +15,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        this.primaryStage = primaryStage;
+        Main.primaryStage = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("TDDT.fxml"));
         root.getStylesheets().add("TDDT.css");
         root.applyCss();

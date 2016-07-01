@@ -14,16 +14,18 @@ public class Sound {
     private FloatControl volume;
 
     public Sound(String soundFile) {
+
+        soundFile = "./" + soundFile;
+        File file = new File(soundFile);
         try {
-            soundFile = "./" + soundFile;
-            File file = new File(soundFile);
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(file.toURI().toURL());
             soundClip = AudioSystem.getClip();
             soundClip.open(audioIn);
-            volume = (FloatControl) soundClip.getControl(FloatControl.Type.MASTER_GAIN);
         } catch (Exception e) {
             e.printStackTrace();
         }
+            volume = (FloatControl) soundClip.getControl(FloatControl.Type.MASTER_GAIN);
+
     }
 
     public void start() {
@@ -31,10 +33,10 @@ public class Sound {
     }
 
     public void setVolume(float volume) {
-        this.volume.setValue(volume);
+            this.volume.setValue(volume);
     }
 
-    FloatControl getVolumeControl(){
+    FloatControl getVolumeControl() {
         return volume;
     }
 }

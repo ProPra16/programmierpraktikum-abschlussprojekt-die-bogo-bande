@@ -2,40 +2,41 @@
 
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES"/>
-        <ColumnConstraints hgrow="SOMETIMES"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0"/>
+        <ColumnConstraints hgrow="NEVER" percentWidth="0.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
-        <RowConstraints vgrow="SOMETIMES"/>
+        <RowConstraints vgrow="NEVER" minHeight="50.0" maxHeight="50"/>
+        <RowConstraints vgrow="SOMETIMES" percentHeight="90.0"/>
     </rowConstraints>
     <children>
         <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
             <tabs>
                 <Tab fx:id="tab_tests" text="Tests">
                     <content>
-                        <AnchorPane>
+                        <VBox fillWidth="true">
                             <children>
-                                <TextArea fx:id="tests">
+                                <TextArea fx:id="tests" prefHeight="500">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </TextArea>
                             </children>
-                        </AnchorPane>
+                        </VBox>
                     </content>
                 </Tab>
                 <Tab fx:id="tab_code" text="Code">
                     <content>
-                        <AnchorPane>
+                        <VBox fillWidth="true">
                             <children>
                                 <TextArea fx:id="code">
                                     <padding>
@@ -43,7 +44,7 @@
                                     </padding>
                                 </TextArea>
                             </children>
-                        </AnchorPane>
+                        </VBox>
                     </content>
                 </Tab>
             </tabs>
@@ -58,52 +59,54 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                     </padding>
                 </VBox>
-                <ComboBox id="combo" fx:id="combo" editable="false" layoutY="7.0" onAction="#task">
+            </children>
+        </Pane>
+        <Pane GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <children>
+                            <Button fx:id="configMenu" layoutY="15.0" layoutX="-55.0" maxWidth="25"
+                                    mnemonicParsing="false"
+                                    onAction="#settings"/>
+            </children>
+        </Pane>
+        <Pane fx:id="button_pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <children>
+                <ComboBox id="combo" fx:id="combo" editable="false" layoutY="0.0" layoutX="15.0" prefWidth="200"
+                          onAction="#task">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
                         </FXCollections>
                     </items>
                 </ComboBox>
-            </children>
-        </Pane>
-        <Pane fx:id="button_pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <children>
-                <VBox layoutX="16.0" layoutY="1.0" prefHeight="26.0" prefWidth="120.0">
+                <VBox layoutX="15.0" layoutY="45.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button id="compile" fx:id="compile" mnemonicParsing="false" onAction="#compile"
                                 prefWidth="120.0" text="Compile"/>
                     </children>
                 </VBox>
-                <VBox layoutX="16.0" layoutY="46.0" prefHeight="26.0" prefWidth="120.0">
+                <VBox layoutX="15.0" layoutY="90.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button fx:id="continueButton" mnemonicParsing="false" onAction="#continueTab" prefWidth="120.0"
                                 text="Continue"/>
                     </children>
                 </VBox>
-                <VBox layoutX="16.0" layoutY="91.0" prefHeight="26.0" prefWidth="120.0">
+                <VBox layoutX="15.0" layoutY="135.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button fx:id="undo" mnemonicParsing="false" onAction="#continueTab" prefWidth="120.0"
                                 text="Undo">
                         </Button>
                     </children>
                 </VBox>
-                <VBox layoutX="16.0" layoutY="136.0" prefHeight="26.0" prefWidth="120.0">
+                <VBox layoutX="15.0" layoutY="180.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button fx:id="stats" mnemonicParsing="false" prefWidth="120.0"
                                 text="Stats"><!--onAction="#showStats"!-->
                         </Button>
                     </children>
                 </VBox>
-                <Text fx:id="babysteps" layoutX="16.0" layoutY="206.0" strokeType="OUTSIDE" strokeWidth="0.0" text=""
+                <Text fx:id="babysteps" layoutX="15.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text=""
                       wrappingWidth="290.0"/>
-                <Text fx:id="compileMessage" layoutX="16.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                <Text fx:id="compileMessage" layoutX="15.0" layoutY="270.0" strokeType="OUTSIDE" strokeWidth="0.0"
                       text="" wrappingWidth="290.0"/>
-                <VBox fx:id="configMenueWrapper">
-                    <children>
-                        <Button fx:id="configMenu" mnemonicParsing="false" onAction="#configMenu"
-                                text="config"/>
-                    </children>
-                </VBox>
                 <VBox fx:id="Menu" prefWidth="300" prefHeight="400" visible="false">
                     <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled"/>
                     <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
@@ -111,8 +114,12 @@
                             prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
                             showTickMarks="true"/>
                     <LineChart fx:id="graph">
-                        <xAxis><NumberAxis label="Values for X-Axis" lowerBound="0" upperBound="3" tickUnit="1"/></xAxis>
-                        <yAxis><NumberAxis label="Values for Y-Axis" lowerBound="0" upperBound="3" tickUnit="1"/></yAxis>
+                        <xAxis>
+                            <NumberAxis label="Values for X-Axis" lowerBound="0" upperBound="3" tickUnit="1"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Values for Y-Axis" lowerBound="0" upperBound="3" tickUnit="1"/>
+                        </yAxis>
                     </LineChart>
                 </VBox>
             </children>

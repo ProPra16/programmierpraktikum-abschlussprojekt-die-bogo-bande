@@ -65,8 +65,6 @@ public class Controller {
     @FXML
     private Pane button_pane;
     @FXML
-    private VBox configMenueWrapper;
-    @FXML
     private ComboBox<String> combo;
     @FXML
     private CheckBox check_the_baby;
@@ -79,8 +77,8 @@ public class Controller {
 
     @FXML
     protected void initialize() {
-        initializeComb();
-        design();
+        initializeTaskSelection();
+        setStageLayout();
         stage.setOnCloseRequest(event -> {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
@@ -105,7 +103,7 @@ public class Controller {
     protected void task(ActionEvent event) {
         if (combo.getSelectionModel().selectedIndexProperty().intValue() > 0) {
             Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue() - 1;
-            initializeTDDT(Main.taskid);
+            initializeTask(Main.taskid);
             combo.setDisable(true);
             status.setFill(Color.RED);
             status.setText(Status.TEST.toString());
@@ -248,15 +246,46 @@ public class Controller {
         }
     }
 
-    private void design() {
-        tabs.setDisable(true);
+    @FXML
+    protected void settings(ActionEvent event) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        double width = screenSize.getWidth();
         double height = screenSize.getHeight();
-        double tab_width = width / 2;
-        double tab_height = height - 50;
+        Menu.setLayoutX(-Menu.getWidth() / 2);
+        Menu.setLayoutY((height - Menu.getHeight()) / 3);
+        Menu.setVisible(true);
+        if (open == 0) {
+            Menu.setVisible(true);
+            new Thread(getVolume).start();
+            open++;
+        } else {
+            Menu.setVisible(false);
+            Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
+            getVolume.cancel();
+            open++;
+            open = 0;
+        }
+    }
 
+    private void initializeTaskSelection() {
+        try {
+            TaskDecoder tasks = new TaskDecoder();
+            int i = tasks.getTasks().getLength();
+            List<String> taskList = new ArrayList<>();
+            taskList.add("Select a Task ...");
+            for (int j = 0; j < i; j++) {
+                taskList.add(tasks.getTasks().item(j).getAttributes().getNamedItem("name").getTextContent());
+            }
+            combo.getItems().clear();
+            combo.getItems().addAll(taskList);
+            combo.getSelectionModel().selectFirst();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setStageLayout() {
         Image configIconImage = new Image("file:build/resources/main/images/gear.png");
         ImageView configIcon = new ImageView(configIconImage);
         Image compileIconImage = new Image("file:build/resources/main/images/run.png");
@@ -266,39 +295,42 @@ public class Controller {
         continueButton.setGraphic(continueIcon);
         continueButton.setDisable(true);
         compile.setGraphic(compileIcon);
-        compile.setDisable(true);
         configMenu.setGraphic(configIcon);
-        configMenu.setText("Settings");
-        configMenueWrapper.setLayoutX(tab_width - 180);
-        configMenu.setPrefWidth(125);
-        configMenu.setPrefHeight(32);
-        configMenueWrapper.setLayoutY(-45);
-
-        try {
-            volSlider.setValue(Volume.initVolume());
-            tabs.setMaxWidth(tab_width);
-            tabs.setMinWidth(tab_width);
-            tests.setMinWidth(tab_width);
-            tests.setMaxWidth(tab_width);
-            code.setMinWidth(tab_width);
-            code.setMaxWidth(tab_width);
-            button_pane.setMaxWidth(tab_width);
-            button_pane.setMinWidth(tab_width);
-            tabs.setMaxHeight(tab_height);
-            tabs.setMinHeight(tab_height);
-            tests.setMaxHeight(tab_height);
-            tests.setMinHeight(tab_height);
-            code.setMaxHeight(tab_height);
-            code.setMinHeight(tab_height);
-            code.setText("");
-            tests.setText("");
-            combo.setLayoutX(tab_width - 160);
-        } catch (Exception e) {
-            System.out.println("ERROR");
-        }
-
     }
 
+    private void initializeTask(int index) {
+
+        try {
+            compile.setDisable(false);
+            continueButton.setDisable(false);
+            tabs.setDisable(false);
+            tabs.getSelectionModel().selectFirst();
+            TaskDecoder tasks = new TaskDecoder();
+            if (tasks.isBabysteps(index) && check_the_baby.isSelected()) new Thread(babyStepsTimer).start();
+            else babysteps.setVisible(false);
+            code.setDisable(true);
+            tests.setDisable(false);
+            continueButton.setDisable(true);
+
+            compileMessage.setFill(Color.BLACK);
+            compileMessage.setText("Write a failing Test");
+            if (Main.taskid == 0) {
+                s = Saves.chooseFile(stage);
+                Saves.loadData(tests, s);
+            } else {
+                tests.setText(tasks.getTest(index));
+            }
+            if (Main.taskid == 0) {
+                Saves.loadData(code, s);
+            } else {
+                code.setText(tasks.getClass(index));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Tasks
     private Task<Integer> babyStepsTimer = new Task<Integer>() {
 
         @Override
@@ -335,85 +367,13 @@ public class Controller {
                         countdownVol.setVolume(Volume.getMinVol());
                     }
                     babysteps.setText("Time: " + time + "s");
-                    if (!compile(null)) initializeTDDT(Main.taskid);
+                    if (!compile(null)) initializeTask(Main.taskid);
                     else continueTab(null);
                 }
             }
             return 0;
         }
     };
-
-
-    private void initializeTDDT(int index) {
-
-        try {
-            compile.setDisable(false);
-            continueButton.setDisable(false);
-            tabs.setDisable(false);
-            tabs.getSelectionModel().selectFirst();
-            TaskDecoder tasks = new TaskDecoder();
-            if (tasks.isBabysteps(index) && check_the_baby.isSelected()) new Thread(babyStepsTimer).start();
-            else babysteps.setVisible(false);
-            code.setDisable(true);
-            tests.setDisable(false);
-            continueButton.setDisable(true);
-
-            compileMessage.setFill(Color.BLACK);
-            compileMessage.setText("Write a failing Test");
-            if (Main.taskid == 0) {
-                s = Saves.chooseFile(stage);
-                Saves.loadData(tests, s);
-            } else {
-                tests.setText(tasks.getTest(index));
-            }
-            if (Main.taskid == 0) {
-                Saves.loadData(code, s);
-            } else {
-                code.setText(tasks.getClass(index));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initializeComb() {
-        try {
-            TaskDecoder tasks = new TaskDecoder();
-            int i = tasks.getTasks().getLength();
-            List<String> taskList = new ArrayList<>();
-            taskList.add("Select a Task ...");
-            for (int j = 0; j < i; j++) {
-                taskList.add(tasks.getTasks().item(j).getAttributes().getNamedItem("name").getTextContent());
-            }
-            combo.getItems().clear();
-            combo.getItems().addAll(taskList);
-            combo.getSelectionModel().selectFirst();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @FXML
-    protected void configMenu(ActionEvent event) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double height = screenSize.getHeight();
-        Menu.setLayoutX(-Menu.getWidth() / 2);
-        Menu.setLayoutY((height - Menu.getHeight()) / 3);
-        Menu.setVisible(true);
-        if (open == 0) {
-            Menu.setVisible(true);
-            new Thread(getVolume).start();
-            open++;
-        } else {
-            Menu.setVisible(false);
-            Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
-            getVolume.cancel();
-            open++;
-            open = 0;
-        }
-    }
 
     private Task<Integer> getVolume = new Task<Integer>() {
         @Override

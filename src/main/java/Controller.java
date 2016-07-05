@@ -8,13 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
 import javafx.scene.control.*;
-import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -24,7 +19,6 @@ import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,23 +27,23 @@ public class Controller {
     private Stage stage = Main.primaryStage;
     private String s;
     private int time;
+    private int cycles = 0;
+    private int errors = 0;
 
     private enum Status {TEST, CODE, REFACTOR}
 
     @FXML
-    private VBox Menu;
-    @FXML
     public Slider volSlider;
     @FXML
-    private Button compile;
-    @FXML
-    private Button configMenu;
+    private Button compileButton;
     @FXML
     private Button continueButton;
     @FXML
+    private Button statsButton;
+    @FXML
     private Text compileMessage;
     @FXML
-    private Text status;
+    private Text statusMessage;
     @FXML
     private TabPane tabs;
     @FXML
@@ -63,38 +57,38 @@ public class Controller {
     @FXML
     private TextArea tests;
     @FXML
-    private Pane button_pane;
-    @FXML
     private ComboBox<String> combo;
     @FXML
     private CheckBox check_the_baby;
+    @FXML
+    private CheckBox check_stalker;
+    @FXML
+    private HBox menu;
+    @FXML
+    private HBox graphShow;
 
     @FXML
-    private LineChart<Integer, Double> graph;
-
-    private int open = 0;
-    private LineChart.Series<Integer, Double> series1 = new LineChart.Series<>();
+    private LineChart<Integer, Integer> graph;
+    private LineChart.Series<Integer, Integer> timeData = new LineChart.Series<>();
+    private LineChart.Series<Integer, Integer> errorData = new LineChart.Series<>();
 
     @FXML
     protected void initialize() {
         initializeTaskSelection();
-        setStageLayout();
         stage.setOnCloseRequest(event -> {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             stage.close();
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
-        status.setText("Select a Task");
+        check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
+        statusMessage.setText("Select a Task");
 
-        ObservableList<XYChart.Series<Integer, Double>> lineChartData = FXCollections.observableArrayList();
+        ObservableList<XYChart.Series<Integer, Integer>> lineChartData = FXCollections.observableArrayList();
 
-        series1.setName("Time");
-        series1.getData().add(new XYChart.Data<>(0, 1.0));
-        series1.getData().add(new XYChart.Data<>(1, 1.4));
-        series1.getData().add(new XYChart.Data<>(2, 1.9));
-        series1.getData().add(new XYChart.Data<>(3, 2.3));
-        series1.getData().add(new XYChart.Data<>(4, 0.5));
-        lineChartData.add(series1);
+        timeData.setName("Time");
+        lineChartData.add(timeData);
+        errorData.setName("Errors");
+        lineChartData.add(errorData);
         graph.setData(lineChartData);
         graph.createSymbolsProperty();
     }
@@ -105,20 +99,22 @@ public class Controller {
             Main.taskid = combo.getSelectionModel().selectedIndexProperty().intValue() - 1;
             initializeTask(Main.taskid);
             combo.setDisable(true);
-            status.setFill(Color.RED);
-            status.setText(Status.TEST.toString());
+            new Thread(timer).start();
+            statusMessage.setFill(Color.RED);
+            statusMessage.setText(Status.TEST.toString());
         }
     }
 
     @FXML
     protected boolean compile(ActionEvent event) {
-        if (status.getText().equals(Status.TEST.toString())) {
+        if (statusMessage.getText().equals(Status.TEST.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler testJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 testJavaStringCompiler.compileAndRunTests();
+                errors += testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size();
                 if (testJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
@@ -142,13 +138,14 @@ public class Controller {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (status.getText().equals(Status.CODE.toString())) {
+        } else if (statusMessage.getText().equals(Status.CODE.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler codeJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 codeJavaStringCompiler.compileAndRunTests();
+                errors += codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).size();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
@@ -172,13 +169,14 @@ public class Controller {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (status.getText().equals(Status.REFACTOR.toString())) {
+        } else if (statusMessage.getText().equals(Status.REFACTOR.toString())) {
             try {
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
                 JavaStringCompiler codeJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 codeJavaStringCompiler.compileAndRunTests();
+                errors += codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).size();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
@@ -208,9 +206,10 @@ public class Controller {
 
     @FXML
     protected void continueTab(ActionEvent event) {
-        if (compile(null) && status.getText().equals(Status.TEST.toString())) {
-            status.setText(Status.CODE.toString());
-            status.setFill(Color.GREEN);
+        if (compile(null) && statusMessage.getText().equals(Status.TEST.toString())) {
+            cycles++;
+            statusMessage.setText(Status.CODE.toString());
+            statusMessage.setFill(Color.GREEN);
             tabs.getSelectionModel().select(tab_code);
             tests.setDisable(true);
             code.setDisable(false);
@@ -223,9 +222,10 @@ public class Controller {
                 e.printStackTrace();
             }
 
-        } else if (compile(null) && status.getText().equals(Status.CODE.toString())) {
-            status.setText(Status.REFACTOR.toString());
-            status.setFill(Color.BLACK);
+        } else if (compile(null) && statusMessage.getText().equals(Status.CODE.toString())) {
+            cycles++;
+            statusMessage.setText(Status.REFACTOR.toString());
+            statusMessage.setFill(Color.BLACK);
             tabs.getSelectionModel().select((int) (Math.random() * 2));
             tests.setDisable(false);
             code.setDisable(false);
@@ -233,9 +233,10 @@ public class Controller {
 
             babyStepsTimer.cancel();
 
-        } else if (compile(null) && status.getText().equals(Status.REFACTOR.toString())) {
-            status.setText(Status.TEST.toString());
-            status.setFill(Color.RED);
+        } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
+            cycles++;
+            statusMessage.setText(Status.TEST.toString());
+            statusMessage.setFill(Color.RED);
             tabs.getSelectionModel().select(tab_tests);
             tests.setDisable(false);
             code.setDisable(true);
@@ -248,22 +249,22 @@ public class Controller {
 
     @FXML
     protected void settings(ActionEvent event) {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double height = screenSize.getHeight();
-        Menu.setLayoutX(-Menu.getWidth() / 2);
-        Menu.setLayoutY((height - Menu.getHeight()) / 3);
-        Menu.setVisible(true);
-        if (open == 0) {
-            Menu.setVisible(true);
-            new Thread(getVolume).start();
-            open++;
-        } else {
-            Menu.setVisible(false);
+        if (menu.isVisible()) {
+            menu.setVisible(false);
             Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
+            Config.saveConfig("TRACKING",check_stalker.isSelected());
+            statsButton.setVisible(check_stalker.isSelected());
             getVolume.cancel();
-            open++;
-            open = 0;
+        } else {
+            menu.setVisible(true);
+            new Thread(getVolume);
         }
+    }
+
+    @FXML
+    protected void stats(ActionEvent event) {
+        if (graphShow.isVisible()) graphShow.setVisible(false);
+        else graphShow.setVisible(true);
     }
 
     private void initializeTaskSelection() {
@@ -285,23 +286,10 @@ public class Controller {
 
     }
 
-    private void setStageLayout() {
-        Image configIconImage = new Image("file:build/resources/main/images/gear.png");
-        ImageView configIcon = new ImageView(configIconImage);
-        Image compileIconImage = new Image("file:build/resources/main/images/run.png");
-        ImageView compileIcon = new ImageView(compileIconImage);
-        Image continueIconImage = new Image("file:build/resources/main/images/arrow_right.png");
-        ImageView continueIcon = new ImageView(continueIconImage);
-        continueButton.setGraphic(continueIcon);
-        continueButton.setDisable(true);
-        compile.setGraphic(compileIcon);
-        configMenu.setGraphic(configIcon);
-    }
-
     private void initializeTask(int index) {
 
         try {
-            compile.setDisable(false);
+            compileButton.setDisable(false);
             continueButton.setDisable(false);
             tabs.setDisable(false);
             tabs.getSelectionModel().selectFirst();
@@ -375,20 +363,50 @@ public class Controller {
         }
     };
 
+    private Task<Integer> timer = new Task<Integer>() {
+
+        @Override
+        protected Integer call() throws Exception {
+            int locCycles;
+            errors = 0;
+            while (!isCancelled()) {
+                locCycles = cycles;
+                int timeCount = 0;
+                while (locCycles == cycles) {
+                    if (isCancelled()) {
+                        break;
+                    }
+                    timeCount++;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException interrupted) {
+                        System.out.println("Time expiered");
+                    }
+                }
+                errorData.getData().add(new XYChart.Data<>(locCycles, errors));
+                timeData.getData().add(new XYChart.Data<>(locCycles, timeCount));
+            }
+            return 0;
+        }
+    };
+
     private Task<Integer> getVolume = new Task<Integer>() {
         @Override
         protected Integer call() throws Exception {
-            while (open < 2) {
-                if (Volume.getVolume() != (float) ((Volume.getMinVol() * (1 - (volSlider.getValue() / 100))))) {
-                    Volume.setVolume((float) ((Volume.getMinVol() * (1 - (volSlider.getValue() / 100)))));
+            while (true) {
+                if (isCancelled()) {
+                    break;
+                }
+                if (Volume.getVolume() != (float) (Volume.getMinVol() * (1 - (volSlider.getValue() / 100)))) {
+                    Volume.setVolume((float) (Volume.getMinVol() * (1 - (volSlider.getValue() / 100))));
                 }
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException interrupted) {
-                    System.out.println("tasks over");
+                    System.out.println(interrupted.getMessage());
                 }
             }
-            return null;
+            return 0;
         }
     };
 }

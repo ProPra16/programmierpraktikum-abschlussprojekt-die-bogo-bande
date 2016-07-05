@@ -81,6 +81,8 @@ public class Controller {
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
+        statsButton.setVisible(check_stalker.isSelected());
+
         statusMessage.setText("Select a Task");
 
         ObservableList<XYChart.Series<Integer, Integer>> lineChartData = FXCollections.observableArrayList();

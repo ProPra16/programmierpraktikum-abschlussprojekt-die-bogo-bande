@@ -29,6 +29,8 @@ public class Controller {
     private int time;
     private int cycles = 0;
     private int errors = 0;
+    private int pause =0;
+    private int war_pausiert=0;
 
     private enum Status {TEST, CODE, REFACTOR}
 
@@ -245,8 +247,10 @@ public class Controller {
             tests.setDisable(false);
             code.setDisable(false);
             continueButton.setDisable(true);
-
-            babyStepsTimer.cancel();
+            //babyStepsTimer.cancel(); //tested:proofed right
+            pause=1;
+            war_pausiert=1;
+            
 
         } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
             cycles++;
@@ -256,8 +260,8 @@ public class Controller {
             tests.setDisable(false);
             code.setDisable(true);
             continueButton.setDisable(true);
-
-            new Thread(babyStepsTimer).start();
+            pause=0;
+            //new Thread(babyStepsTimer);
 
         }
     }
@@ -343,37 +347,46 @@ public class Controller {
             TaskDecoder tasks = new TaskDecoder();
             Sound countdownVol = null;
             while (!isCancelled()) {
-                babysteps.setFill(Color.BLACK);
+                    babysteps.setFill(Color.BLACK);
                 for (time = tasks.getBabystepsTime(Main.taskid); time > 0; time--) {
-                    if (isCancelled()) {
-                        break;
-                    }
+                    if (pause == 0) {
+                        if (war_pausiert == 1) {
+                            war_pausiert = 0;
+                            time = tasks.getBabystepsTime(Main.taskid);
+                        }
+                        if (isCancelled()) {
+                            break;
+                        }
 
-                    if (time == 20) {
-                        babysteps.setFill(Color.RED);
-                        countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
-                    }
-                    if (!(countdownVol == null)) {
-                        countdownVol.setVolume(Volume.getVolume());
-                        countdownVol.start();
-                    }
+                        if (time == 20) {
+                            babysteps.setFill(Color.RED);
+                            countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
+                        }
+                        if (!(countdownVol == null)) {
+                            countdownVol.setVolume(Volume.getVolume());
+                            countdownVol.start();
+                        }
 
-                    babysteps.setText("Time: " + time + "s");
+                        babysteps.setText("Time: " + time + "s");
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException interrupted) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException interrupted) {
 
-                        System.out.println("tasks over");
+                            System.out.println("tasks over");
+                        }
+
+                        if (time == 0) {
+                            if (countdownVol != null) {
+                                countdownVol.setVolume(Volume.getMinVol());
+                            }
+                            babysteps.setText("Time: " + time + "s");
+                            if (!compile(null)) initializeTask(Main.taskid);
+                            else continueTab(null);
+                        }
+                    }else{
+                        time++;
                     }
-                }
-                if (time == 0) {
-                    if (countdownVol != null) {
-                        countdownVol.setVolume(Volume.getMinVol());
-                    }
-                    babysteps.setText("Time: " + time + "s");
-                    if (!compile(null)) initializeTask(Main.taskid);
-                    else continueTab(null);
                 }
             }
             return 0;
@@ -400,8 +413,8 @@ public class Controller {
                         System.out.println("Time expiered");
                     }
                 }
-                errorData.getData().add(new XYChart.Data<>(locCycles, errors));
-                timeData.getData().add(new XYChart.Data<>(locCycles, timeCount));
+                //errorData.getData().add(new XYChart.Data<>(locCycles, errors));
+                //timeData.getData().add(new XYChart.Data<>(locCycles, timeCount));
             }
             return 0;
         }

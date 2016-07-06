@@ -98,6 +98,13 @@
                         </Button>
                     </children>
                 </VBox>
+                <VBox layoutX="15.0" layoutY="180.0" prefHeight="26.0" prefWidth="120.0">
+                    <children>
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#savetab" prefWidth="120.0"
+                                text="Save">
+                        </Button>
+                    </children>
+                </VBox>
                 <VBox layoutX="15.0" layoutY="135.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button fx:id="statsButton" mnemonicParsing="false" prefWidth="120.0"

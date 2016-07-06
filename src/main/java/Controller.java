@@ -85,6 +85,7 @@ public class Controller {
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
         statsButton.setVisible(check_stalker.isSelected());
         saveButton.setVisible(false);
+
         statusMessage.setText("Select a Task");
 
         ObservableList<XYChart.Series<Integer, Integer>> lineChartData = FXCollections.observableArrayList();

@@ -39,6 +39,8 @@ public class Controller {
     @FXML
     private Button continueButton;
     @FXML
+    private Button saveButton;
+    @FXML
     private Button statsButton;
     @FXML
     private Text compileMessage;
@@ -82,7 +84,7 @@ public class Controller {
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
         statsButton.setVisible(check_stalker.isSelected());
-
+        saveButton.setVisible(false);
         statusMessage.setText("Select a Task");
 
         ObservableList<XYChart.Series<Integer, Integer>> lineChartData = FXCollections.observableArrayList();
@@ -133,6 +135,7 @@ public class Controller {
                     } else {
                         continueButton.setDisable(true);
                         compileMessage.setText("No Errors while compiling\nNo Test failed, write a failing Test!");
+                        //savetab(null);
                     }
                 }
 
@@ -204,6 +207,15 @@ public class Controller {
             }
         }
         return false;
+    }
+    @FXML
+    protected void savetab(ActionEvent event){
+
+        String s ="lastcode";
+        String t ="lasttest";
+        Saves.saveData(code,s);
+        Saves.saveData(tests,t);
+        compileMessage.setText("Data saved to lastcode.txt and lasttest.txt");
     }
 
     @FXML
@@ -301,6 +313,7 @@ public class Controller {
             code.setDisable(true);
             tests.setDisable(false);
             continueButton.setDisable(true);
+            saveButton.setVisible(true);
 
             compileMessage.setFill(Color.BLACK);
             compileMessage.setText("Write a failing Test");
@@ -311,6 +324,7 @@ public class Controller {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
+                s=Saves.chooseFile(stage);
                 Saves.loadData(code, s);
             } else {
                 code.setText(tasks.getClass(index));

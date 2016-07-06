@@ -29,8 +29,8 @@ public class Controller {
     private int time;
     private int cycles = 0;
     private int errors = 0;
-    private int pause =0;
-    private int war_pausiert=0;
+    private int pause =0;            //"pausiert" gegebenenfalls den Babysteptimer
+    private int war_pausiert=0;      //hilft der Logik den Timer zu resetten, falls pausiert worden ist
 
     private enum Status {TEST, CODE, REFACTOR}
 
@@ -384,7 +384,7 @@ public class Controller {
                             if (!compile(null)) initializeTask(Main.taskid);
                             else continueTab(null);
                         }
-                    }else{
+                    }else{      // Wenn der User im Refactor abschnitt ist, gibt es kein Zeitlimit
                         time++;
                     }
                 }

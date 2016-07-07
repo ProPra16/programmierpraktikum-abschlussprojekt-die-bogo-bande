@@ -30,8 +30,6 @@ public class Controller {
     private int cycles = 0;
     private int errors = 0;
     private int pause =0;            //"pausiert" gegebenenfalls den Babysteptimer
-    private int war_pausiert=0;      //hilft der Logik den Timer zu resetten, falls pausiert worden ist
-
     private enum Status {TEST, CODE, REFACTOR}
 
     @FXML
@@ -158,6 +156,7 @@ public class Controller {
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
                     compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
+                    return false;
                 } else {
                     if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         codeJavaStringCompiler.compileAndRunTests();
@@ -173,7 +172,6 @@ public class Controller {
                         return true;
                     }
                 }
-                return false;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -249,8 +247,7 @@ public class Controller {
             continueButton.setDisable(true);
             //babyStepsTimer.cancel(); //tested:proofed right
             pause=1;
-            war_pausiert=1;
-            
+
 
         } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
             cycles++;
@@ -261,7 +258,6 @@ public class Controller {
             code.setDisable(true);
             continueButton.setDisable(true);
             pause=0;
-            //new Thread(babyStepsTimer);
 
         }
     }
@@ -276,7 +272,7 @@ public class Controller {
             getVolume.cancel();
         } else {
             menu.setVisible(true);
-            new Thread(getVolume);
+            new Thread(getVolume).start();
         }
     }
 
@@ -323,13 +319,13 @@ public class Controller {
             compileMessage.setFill(Color.BLACK);
             compileMessage.setText("Write a failing Test");
             if (Main.taskid == 0) {
-                s = Saves.chooseFile(stage);
+                s = Saves.chooseFile(stage,0);
                 Saves.loadData(tests, s);
             } else {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
-                s=Saves.chooseFile(stage);
+                s=Saves.chooseFile(stage,1);
                 Saves.loadData(code, s);
             } else {
                 code.setText(tasks.getClass(index));
@@ -347,19 +343,13 @@ public class Controller {
             TaskDecoder tasks = new TaskDecoder();
             Sound countdownVol = null;
             while (!isCancelled()) {
-                    babysteps.setFill(Color.BLACK);
-                for (time = tasks.getBabystepsTime(Main.taskid); time > 0; time--) {
+                for (time = tasks.getBabystepsTime(Main.taskid); time >= 0; time--) {
                     if (pause == 0) {
-                        if (war_pausiert == 1) {
-                            war_pausiert = 0;
-                            time = tasks.getBabystepsTime(Main.taskid);
-                        }
                         if (isCancelled()) {
                             break;
                         }
 
                         if (time == 20) {
-                            babysteps.setFill(Color.RED);
                             countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
                         }
                         if (!(countdownVol == null)) {
@@ -375,17 +365,19 @@ public class Controller {
 
                             System.out.println("tasks over");
                         }
-
                         if (time == 0) {
                             if (countdownVol != null) {
                                 countdownVol.setVolume(Volume.getMinVol());
                             }
                             babysteps.setText("Time: " + time + "s");
-                            if (!compile(null)) initializeTask(Main.taskid);
+                            if (!compile(null)){
+                                Saves.loadData(tests,"build/resources/main/saves/test.txt");
+                                Saves.loadData(code,"build/resources/main/saves/code.txt");
+                            }
                             else continueTab(null);
                         }
                     }else{      // Wenn der User im Refactor abschnitt ist, gibt es kein Zeitlimit
-                        time++;
+                        time = tasks.getBabystepsTime(Main.taskid);
                     }
                 }
             }
@@ -423,7 +415,9 @@ public class Controller {
     private Task<Integer> getVolume = new Task<Integer>() {
         @Override
         protected Integer call() throws Exception {
-            while (true) {
+            System.out.println("Start");
+            while (!isCancelled()) {
+                System.out.println("GO");
                 if (isCancelled()) {
                     break;
                 }

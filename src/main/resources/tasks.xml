@@ -26,33 +26,6 @@
             <timetracking value="True" />
         </config>
     </exercise>
-    <exercise name="Recent Task">
-        <description>fileload</description>
-        <class name="TestCode">
-            public class TestCode{
-            public static String convert(){
-            return null;
-            }
-            }
-        </class>
-        <test name="TestTest">
-            import static org.junit.Assert.*;
-            import org.junit.Test;
-
-            public class TestTest{
-
-            @Test
-            public void aTest(){
-            assertEquals(null,TestCode.convert());
-            }
-
-            }
-        </test>
-        <config>
-            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
-            <timetracking value="True" />
-        </config>
-    </exercise>
     <exercise name="Test">
         <description>Test ya Shit</description>
             <class name="TestCode">

@@ -102,6 +102,13 @@
                     <children>
                         <Button fx:id="saveButton" mnemonicParsing="false" onAction="#savetab" prefWidth="120.0"
                                 text="Save">
+                            <graphic>
+                                <ImageView>
+                                    <image>
+                                        <Image url="images/floppy.png"/>
+                                    </image>
+                                </ImageView>
+                            </graphic>
                         </Button>
                     </children>
                 </VBox>
@@ -133,15 +140,15 @@
         </children>
     </HBox>
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" GridPane.rowSpan="2"
-               alignment="CENTER"
-               fx:id="menu" visible="false">
+          alignment="CENTER"
+          fx:id="menu" visible="false">
         <children>
-                <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled"/>
-                <CheckBox fx:id="check_stalker" Text="Tracking Enabled"/>
-                <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
-                        majorTickUnit="25.0" max="100.0"
-                        prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
-                        showTickMarks="true"/>
+            <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled"/>
+            <CheckBox fx:id="check_stalker" Text="Tracking Enabled"/>
+            <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
+                    majorTickUnit="25.0" max="100.0"
+                    prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
+                    showTickMarks="true"/>
         </children>
     </HBox>
     <Pane GridPane.columnIndex="2" GridPane.rowIndex="0">

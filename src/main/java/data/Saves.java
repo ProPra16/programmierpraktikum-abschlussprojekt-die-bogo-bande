@@ -12,9 +12,6 @@ import java.nio.file.Paths;
 
 public class Saves {
 
-    private static int ichooser;
-
-
     public static void loadData(TextArea textArea, String s) {
         final Path path = Paths.get(s);
         try {
@@ -40,13 +37,11 @@ public class Saves {
     }
 
 
-    public static String chooseFile(Stage stage) {
+    public static String chooseFile(Stage stage,int ichooser) {
         FileChooser dialog = new FileChooser();
         if(ichooser==0) {
-            ichooser++;
             dialog.setTitle("Choose Test");
         }else{
-            ichooser--;
             dialog.setTitle("Choose Code");
         }
         dialog.getExtensionFilters().add(

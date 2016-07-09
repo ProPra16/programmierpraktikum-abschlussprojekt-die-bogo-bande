@@ -246,8 +246,9 @@ public class Controller {
         statusMessage.setText(Status.TEST.toString());
         code.setDisable(true);
         tests.setDisable(false);
+        returnButton.setDisable(true);
         tabs.getSelectionModel().select(tab_tests);
-        compileMessage.setText("You returned to Test.You code has been reseted");
+        compileMessage.setText("You returned to Test.You code has been resetted");
         Saves.loadData(code,"build/resources/main/saves/code.txt");
     }
 
@@ -414,7 +415,7 @@ public class Controller {
                                 returnTab(null);    //Wenn nicht compiliert geh zu test falls in code
                                 else if(statusMessage.getText().equals(Status.TEST.toString())) {  //wenn in test resette Tests
                                     Saves.loadData(tests, "build/resources/main/saves/test.txt");
-                                    compileMessage.setText("Test resettet, weil Zeit abgelaufen ist");
+                                    compileMessage.setText("Test resetted, weil Zeit abgelaufen ist");
                                 }
                             }
                             else continueTab(null);

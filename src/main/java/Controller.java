@@ -118,7 +118,6 @@ public class Controller {
     protected boolean compile(ActionEvent event) {
         if (statusMessage.getText().equals(Status.TEST.toString())) {
             try {
-                //returnButton.setDisable(true);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -166,7 +165,6 @@ public class Controller {
             }
         } else if (statusMessage.getText().equals(Status.CODE.toString())) {
             try {
-                //returnButton.setDisable(false);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -199,7 +197,6 @@ public class Controller {
             }
         } else if (statusMessage.getText().equals(Status.REFACTOR.toString())) {
             try {
-                //returnButton.setDisable(true);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -283,7 +280,6 @@ public class Controller {
             tests.setDisable(false);
             code.setDisable(false);
             continueButton.setDisable(true);
-            //babyStepsTimer.cancel(); //tested:proofed right
             pause=1;
 
 
@@ -360,14 +356,12 @@ public class Controller {
             if (Main.taskid == 0) {
                 s = Saves.chooseFile(stage,0);
                 Saves.loadData(tests, s);
-                //Saves.saveData(tests,"tests");  //siehe unten
             } else {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
                 s=Saves.chooseFile(stage,1);
                 Saves.loadData(code, s);
-                //Saves.saveData(code,"code");    //@Sven:Ich setzte hier code bzw test.txt auf die aktuelle Tasks
             } else {
                 code.setText(tasks.getClass(index));
             }
@@ -416,8 +410,6 @@ public class Controller {
                             }
                             babysteps.setText("Time: " + time + "s");
                             if (!compile(null)){
-                                //Saves.loadData(tests,"build/resources/main/saves/test.txt");
-                                //Saves.loadData(code,"build/resources/main/saves/code.txt");
                                 if(statusMessage.getText().equals(Status.CODE.toString()))
                                 returnTab(null);    //Wenn nicht compiliert geh zu test falls in code
                                 else if(statusMessage.getText().equals(Status.TEST.toString())) {  //wenn in test resette Tests

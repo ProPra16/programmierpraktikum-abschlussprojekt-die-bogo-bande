@@ -25,6 +25,7 @@ import java.util.List;
 public class Controller {
 
     private Stage stage = Main.primaryStage;
+    private int methodeerror=0;
     private String s;
     private int time;
     private int cycles = 0;
@@ -36,6 +37,8 @@ public class Controller {
     public Slider volSlider;
     @FXML
     private Button compileButton;
+    @FXML
+    private Button returnButton;
     @FXML
     private Button continueButton;
     @FXML
@@ -85,6 +88,7 @@ public class Controller {
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
         statsButton.setVisible(check_stalker.isSelected());
         saveButton.setVisible(false);
+        returnButton.setDisable(true);
 
         statusMessage.setText("Select a Task");
 
@@ -114,6 +118,7 @@ public class Controller {
     protected boolean compile(ActionEvent event) {
         if (statusMessage.getText().equals(Status.TEST.toString())) {
             try {
+                //returnButton.setDisable(true);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -121,18 +126,33 @@ public class Controller {
                 testJavaStringCompiler.compileAndRunTests();
                 errors += testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size();
                 if (testJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
+                    if (testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size()==1){
+                        if(testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString().contains(":error:cannot find symbol\n  symbol:   method")) { // symbol:   method
+                            compileMessage.setText("Error:Methode not found...You may continue if you want to write a new Methode");
+                            s = "test";
+                            Saves.saveData(tests, s);
+                            continueButton.setDisable(false);
+                            return true;
+                        }
+                    }
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
                     compileMessage.setText(testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
                 } else {
                     compileMessage.setFill(Color.GREEN);
                     if (testJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
-                        continueButton.setDisable(false);
-                        testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(/*e.getMessage()*/));
-                        compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
-                        s = "test";
-                        Saves.saveData(tests, s);
-                        return true;
+                        if (testJavaStringCompiler.getTestResult().getNumberOfFailedTests() == 1) {
+                            continueButton.setDisable(false);
+                            testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(/*e.getMessage()*/));
+                            compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
+                            s = "test";
+                            Saves.saveData(tests, s);
+                            methodeerror=1;
+                            return true;    //Momentan: nur dann wenn 1Test fehlschlägt darf der Benutzer weiterarbeiten
+                        }
+                        else{
+                            compileMessage.setText("You wrote to many failed Tests. You are only allowed to write one failing Test!");
+                        }
                     } else {
                         continueButton.setDisable(true);
                         compileMessage.setText("No Errors while compiling\nNo Test failed, write a failing Test!");
@@ -146,6 +166,7 @@ public class Controller {
             }
         } else if (statusMessage.getText().equals(Status.CODE.toString())) {
             try {
+                //returnButton.setDisable(false);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -167,9 +188,10 @@ public class Controller {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
+                        returnButton.setDisable(true);
                         s = "code";
                         Saves.saveData(code, s);
-                        return true;
+                        return true;        //wenn code compiliert und alle Tests funktionieren darf der Benutzer weitermachen
                     }
                 }
             } catch (Exception e) {
@@ -177,6 +199,7 @@ public class Controller {
             }
         } else if (statusMessage.getText().equals(Status.REFACTOR.toString())) {
             try {
+                //returnButton.setDisable(true);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -199,8 +222,10 @@ public class Controller {
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
                         s = "code";
                         Saves.saveData(code, s);
-                        return true;
-                    }
+                        s= "test";
+                        Saves.saveData(tests, s);
+                        return true;        //nur dann wenn alles compiliert und alle tests durchlaufen, kann der Benutzer
+                    }                       //weiter machen und alles wird gespeichert
                 }
                 return false;
             } catch (Exception e) {
@@ -218,10 +243,22 @@ public class Controller {
         Saves.saveData(tests,t);
         compileMessage.setText("Data saved to lastcode.txt and lasttest.txt");
     }
+    @FXML
+    protected void returnTab(ActionEvent event){
+        statusMessage.setFill(Color.RED);
+        statusMessage.setText(Status.TEST.toString());
+        code.setDisable(true);
+        tests.setDisable(false);
+        tabs.getSelectionModel().select(tab_tests);
+        compileMessage.setText("You returned to Test.You code has been reseted");
+        Saves.loadData(code,"build/resources/main/saves/code.txt");
+    }
 
     @FXML
     protected void continueTab(ActionEvent event) {
-        if (compile(null) && statusMessage.getText().equals(Status.TEST.toString())) {
+        if ((compile(null) && statusMessage.getText().equals(Status.TEST.toString())) || methodeerror==1) {
+            methodeerror=0;
+            returnButton.setDisable(false);
             cycles++;
             statusMessage.setText(Status.CODE.toString());
             statusMessage.setFill(Color.GREEN);
@@ -238,6 +275,7 @@ public class Controller {
             }
 
         } else if (compile(null) && statusMessage.getText().equals(Status.CODE.toString())) {
+            returnButton.setDisable(true);
             cycles++;
             statusMessage.setText(Status.REFACTOR.toString());
             statusMessage.setFill(Color.BLACK);
@@ -250,6 +288,7 @@ public class Controller {
 
 
         } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
+            returnButton.setDisable(true);
             cycles++;
             statusMessage.setText(Status.TEST.toString());
             statusMessage.setFill(Color.RED);
@@ -321,15 +360,21 @@ public class Controller {
             if (Main.taskid == 0) {
                 s = Saves.chooseFile(stage,0);
                 Saves.loadData(tests, s);
+                //Saves.saveData(tests,"tests");  //siehe unten
             } else {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
                 s=Saves.chooseFile(stage,1);
                 Saves.loadData(code, s);
+                //Saves.saveData(code,"code");    //@Sven:Ich setzte hier code bzw test.txt auf die aktuelle Tasks
             } else {
                 code.setText(tasks.getClass(index));
             }
+            String t="code";
+            Saves.saveData(code,"code");
+            Saves.saveData(tests,"test");
+            t="test";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -371,8 +416,14 @@ public class Controller {
                             }
                             babysteps.setText("Time: " + time + "s");
                             if (!compile(null)){
-                                Saves.loadData(tests,"build/resources/main/saves/test.txt");
-                                Saves.loadData(code,"build/resources/main/saves/code.txt");
+                                //Saves.loadData(tests,"build/resources/main/saves/test.txt");
+                                //Saves.loadData(code,"build/resources/main/saves/code.txt");
+                                if(statusMessage.getText().equals(Status.CODE.toString()))
+                                returnTab(null);    //Wenn nicht compiliert geh zu test falls in code
+                                else if(statusMessage.getText().equals(Status.TEST.toString())) {  //wenn in test resette Tests
+                                    Saves.loadData(tests, "build/resources/main/saves/test.txt");
+                                    compileMessage.setText("Test resettet, weil Zeit abgelaufen ist");
+                                }
                             }
                             else continueTab(null);
                         }

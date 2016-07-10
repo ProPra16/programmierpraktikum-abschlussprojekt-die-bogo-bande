@@ -32,6 +32,8 @@ public class Sound {
         soundClip.start();
     }
 
+    public void ende(){soundClip.close();}
+
     public void setVolume(float volume) {
             this.volume.setValue(volume);
     }

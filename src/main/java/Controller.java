@@ -89,6 +89,7 @@ public class Controller {
         statsButton.setVisible(check_stalker.isSelected());
         saveButton.setVisible(false);
         returnButton.setDisable(true);
+        volSlider.setValue(100+(((Config.loadFloatFromConfig("SOUNDVOLUME")/80)*100)));
 
         statusMessage.setText("Select a Task");
 
@@ -305,7 +306,7 @@ public class Controller {
             Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
             Config.saveConfig("TRACKING",check_stalker.isSelected());
             statsButton.setVisible(check_stalker.isSelected());
-            getVolume.cancel();
+            //getVolume.cancel(); warum soll er canceln?
         } else {
             menu.setVisible(true);
             new Thread(getVolume).start();
@@ -389,7 +390,7 @@ public class Controller {
                             break;
                         }
 
-                        if (time == 20) {
+                        if (time == 11) {
                             countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
                         }
                         if (!(countdownVol == null)) {
@@ -408,6 +409,7 @@ public class Controller {
                         if (time == 0) {
                             if (countdownVol != null) {
                                 countdownVol.setVolume(Volume.getMinVol());
+                                countdownVol.ende();
                             }
                             babysteps.setText("Time: " + time + "s");
                             if (!compile(null)){
@@ -461,17 +463,17 @@ public class Controller {
         protected Integer call() throws Exception {
             System.out.println("Start");
             while (!isCancelled()) {
-                System.out.println("GO");
                 if (isCancelled()) {
                     break;
                 }
                 if (Volume.getVolume() != (float) (Volume.getMinVol() * (1 - (volSlider.getValue() / 100)))) {
                     Volume.setVolume((float) (Volume.getMinVol() * (1 - (volSlider.getValue() / 100))));
+                    System.out.print("K");
                 }
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException interrupted) {
-                    System.out.println(interrupted.getMessage());
+                  System.out.println(interrupted.getMessage());
                 }
             }
             return 0;

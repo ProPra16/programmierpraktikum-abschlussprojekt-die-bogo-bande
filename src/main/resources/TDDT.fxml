@@ -8,6 +8,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.chart.CategoryAxis?>
 <GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
@@ -136,12 +137,25 @@
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="1" GridPane.rowSpan="2" alignment="CENTER"
           fx:id="graphShow" visible="false">
         <children>
-            <LineChart fx:id="graph" layoutX="15.0" layoutY="-55.0">
+            <LineChart fx:id="graph" layoutX="15.0" layoutY="-55.0" prefWidth="435.0" maxHeight="580.0">
                 <xAxis>
-                    <NumberAxis label="Count" lowerBound="0" upperBound="3" tickUnit="1"/>
+                    <CategoryAxis label="Steps" />
                 </xAxis>
                 <yAxis>
-                    <NumberAxis label="Cycles" lowerBound="0" upperBound="3" tickUnit="1"/>
+                    <NumberAxis label="Time in sec" lowerBound="0" upperBound="10" tickUnit="1"/>
+                </yAxis>
+            </LineChart>
+        </children>
+    </HBox>
+    <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="1" GridPane.rowSpan="2" alignment="CENTER"
+          fx:id="graphShow2" visible="false">
+        <children>
+            <LineChart fx:id="graph2" layoutX="15.0" layoutY="-55.0" prefWidth="435.0" maxHeight="580.0" >
+                <xAxis>
+                    <CategoryAxis label="Steps" />
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Number of Errors" lowerBound="0" upperBound="10" tickUnit="1"/>
                 </yAxis>
             </LineChart>
         </children>

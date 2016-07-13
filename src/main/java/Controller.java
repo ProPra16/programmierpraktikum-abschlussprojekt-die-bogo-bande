@@ -7,6 +7,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -25,10 +26,14 @@ import java.util.List;
 public class Controller {
 
     private Stage stage = Main.primaryStage;
+    private String serror="No Errors";
     private int methodeerror=0;
     private String s;
     private int time;
+    private int locCycles=0;
+    private int timeCount = 0;
     private int cycles = 0;
+    private int graphhelper = 0;
     private int errors = 0;
     private int pause =0;            //"pausiert" gegebenenfalls den Babysteptimer
     private enum Status {TEST, CODE, REFACTOR}
@@ -71,11 +76,16 @@ public class Controller {
     private HBox menu;
     @FXML
     private HBox graphShow;
+    @FXML
+    private HBox graphShow2;
 
     @FXML
-    private LineChart<Integer, Integer> graph;
-    private LineChart.Series<Integer, Integer> timeData = new LineChart.Series<>();
-    private LineChart.Series<Integer, Integer> errorData = new LineChart.Series<>();
+    private LineChart<String, Integer> graph;
+    private LineChart.Series<String, Integer> timeData = new LineChart.Series<>();
+
+    @FXML
+    private LineChart<String, Integer> graph2;
+    private LineChart.Series<String, Integer> errorData = new LineChart.Series<>();
 
     @FXML
     protected void initialize() {
@@ -93,14 +103,23 @@ public class Controller {
 
         statusMessage.setText("Select a Task");
 
-        ObservableList<XYChart.Series<Integer, Integer>> lineChartData = FXCollections.observableArrayList();
-
+        ObservableList<XYChart.Series<String, Integer>> lineChartData = FXCollections.observableArrayList();
+        ObservableList<XYChart.Series<String, Integer>> lineChartData2 = FXCollections.observableArrayList();
+        graph.setTranslateX(-205.0);
+        graph.setTranslateY(20.0);
+        graph2.setTranslateY(20.0);
+        graph2.setTranslateX(205.0);
         timeData.setName("Time");
         lineChartData.add(timeData);
         errorData.setName("Errors");
-        lineChartData.add(errorData);
+        lineChartData2.add(errorData);
         graph.setData(lineChartData);
         graph.createSymbolsProperty();
+        graph2.setData(lineChartData2);
+        graph2.createSymbolsProperty();
+
+        Saves.saveErrors("temp",0);
+        Saves.saveErrors("all",0);
     }
 
     @FXML
@@ -119,6 +138,7 @@ public class Controller {
     protected boolean compile(ActionEvent event) {
         if (statusMessage.getText().equals(Status.TEST.toString())) {
             try {
+                Saves.saveErrors("temp",0);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -126,8 +146,11 @@ public class Controller {
                 testJavaStringCompiler.compileAndRunTests();
                 errors += testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size();
                 if (testJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
+                    if(!serror.contains("Test Errors"))serror="Testerrors:";
+                    serror=serror + "\n" + testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString();
                     if (testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size()==1){
                         if(testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString().contains(":error:cannot find symbol\n  symbol:   method")) { // symbol:   method
+                            compileMessage.setFill(Color.GREEN);
                             compileMessage.setText("Error:Methode not found...You may continue if you want to write a new Methode");
                             s = "test";
                             Saves.saveData(tests, s);
@@ -144,6 +167,7 @@ public class Controller {
                         if (testJavaStringCompiler.getTestResult().getNumberOfFailedTests() == 1) {
                             continueButton.setDisable(false);
                             testJavaStringCompiler.getTestResult().getTestFailures().stream().forEach(e -> System.out.println(/*e.getMessage()*/));
+                            compileMessage.setFill(Color.GREEN);
                             compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
                             s = "test";
                             Saves.saveData(tests, s);
@@ -151,12 +175,13 @@ public class Controller {
                             return true;    //Momentan: nur dann wenn 1Test fehlschlägt darf der Benutzer weiterarbeiten
                         }
                         else{
+                            compileMessage.setFill(Color.BLACK);
                             compileMessage.setText("You wrote to many failed Tests. You are only allowed to write one failing Test!");
                         }
                     } else {
                         continueButton.setDisable(true);
+                        compileMessage.setFill(Color.BLACK);
                         compileMessage.setText("No Errors while compiling\nNo Test failed, write a failing Test!");
-                        //savetab(null);
                     }
                 }
 
@@ -173,6 +198,8 @@ public class Controller {
                 codeJavaStringCompiler.compileAndRunTests();
                 errors += codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).size();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
+                    if(!serror.contains("Code Errors"))serror=serror + "\n" + "Code Errors:";
+                    serror=serror + "\n" + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString();
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
                     compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
@@ -181,11 +208,13 @@ public class Controller {
                     if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         codeJavaStringCompiler.compileAndRunTests();
                         continueButton.setDisable(true);
+                        compileMessage.setFill(Color.BLACK);
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " tests failed!");
                         return false;
                     } else {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
+                        compileMessage.setFill(Color.GREEN);
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
                         returnButton.setDisable(true);
                         s = "code";
@@ -204,7 +233,9 @@ public class Controller {
                 JavaStringCompiler codeJavaStringCompiler = CompilerFactory.getCompiler(codeCompilationUnit, testCompilationUnit);
                 codeJavaStringCompiler.compileAndRunTests();
                 errors += codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).size();
-                if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
+                if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {    //hier fehlen testerrors!!!!!!
+                    if(!serror.contains("Refactor Errors"))serror=serror + "\n" + "Refactor Errors:";
+                    serror=serror + "\n" + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString();
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
                     compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
@@ -212,11 +243,13 @@ public class Controller {
                     if (codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() > 0) {
                         codeJavaStringCompiler.compileAndRunTests();
                         continueButton.setDisable(true);
+                        compileMessage.setFill(Color.BLACK);
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfFailedTests() + " tests failed!");
                         return false;
                     } else {
                         continueButton.setDisable(false);
                         codeJavaStringCompiler.compileAndRunTests();
+                        compileMessage.setFill(Color.GREEN);
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
                         s = "code";
                         Saves.saveData(code, s);
@@ -239,6 +272,7 @@ public class Controller {
         String t ="lasttest";
         Saves.saveData(code,s);
         Saves.saveData(tests,t);
+        compileMessage.setFill(Color.GREEN);
         compileMessage.setText("Data saved to lastcode.txt and lasttest.txt");
     }
     @FXML
@@ -249,6 +283,7 @@ public class Controller {
         tests.setDisable(false);
         returnButton.setDisable(true);
         tabs.getSelectionModel().select(tab_tests);
+        compileMessage.setFill(Color.BLACK);
         compileMessage.setText("You returned to Test.You code has been resetted");
         Saves.loadData(code,"build/resources/main/saves/code.txt");
     }
@@ -266,6 +301,12 @@ public class Controller {
             code.setDisable(false);
             continueButton.setDisable(true);
             compileMessage.setText("Write some code!");
+            timeData.getData().add(new XYChart.Data<>("Test" + graphhelper, timeCount));
+            errorData.getData().add(new XYChart.Data<>("Test" + graphhelper, errors));
+            Saves.saveErrors(serror,1);
+            serror="";
+            errors = 0;
+            timeCount=0;
 
             try {
                 time = new TaskDecoder().getBabystepsTime(Main.taskid);
@@ -282,6 +323,12 @@ public class Controller {
             tests.setDisable(false);
             code.setDisable(false);
             continueButton.setDisable(true);
+            timeData.getData().add(new XYChart.Data<>("Code" + graphhelper, timeCount));
+            timeCount=0;
+            errorData.getData().add(new XYChart.Data<>("Code" + graphhelper, errors));
+            errors = 0;
+            Saves.saveErrors(serror,1);
+            serror="";
             pause=1;
 
 
@@ -294,6 +341,13 @@ public class Controller {
             tests.setDisable(false);
             code.setDisable(true);
             continueButton.setDisable(true);
+            timeData.getData().add(new XYChart.Data<>("Refactor" + graphhelper, timeCount));
+            timeCount=0;
+            errorData.getData().add(new XYChart.Data<>("Refactor" + graphhelper, errors));
+            errors = 0;
+            Saves.saveErrors(serror,1);
+            serror="No Errors";
+            graphhelper++;
             pause=0;
 
         }
@@ -306,7 +360,6 @@ public class Controller {
             Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
             Config.saveConfig("TRACKING",check_stalker.isSelected());
             statsButton.setVisible(check_stalker.isSelected());
-            //getVolume.cancel(); warum soll er canceln?
         } else {
             menu.setVisible(true);
             new Thread(getVolume).start();
@@ -315,8 +368,18 @@ public class Controller {
 
     @FXML
     protected void stats(ActionEvent event) {
-        if (graphShow.isVisible()) graphShow.setVisible(false);
-        else graphShow.setVisible(true);
+        if (graphShow.isVisible()){
+            graphShow.setVisible(false);
+            graphShow2.setVisible(false);
+        }
+        else {
+            graphShow.setVisible(true);
+            graphShow2.setVisible(true);
+            serror=Saves.loadErrors();
+            compileMessage.setFill(Color.RED);
+            compileMessage.setText(serror);
+            serror="No Errors";
+        }
     }
 
     private void initializeTaskSelection() {
@@ -417,6 +480,7 @@ public class Controller {
                                 returnTab(null);    //Wenn nicht compiliert geh zu test falls in code
                                 else if(statusMessage.getText().equals(Status.TEST.toString())) {  //wenn in test resette Tests
                                     Saves.loadData(tests, "build/resources/main/saves/test.txt");
+                                    compileMessage.setFill(Color.RED);
                                     compileMessage.setText("Test resetted, weil Zeit abgelaufen ist");
                                 }
                             }
@@ -435,11 +499,8 @@ public class Controller {
 
         @Override
         protected Integer call() throws Exception {
-            int locCycles;
-            errors = 0;
             while (!isCancelled()) {
                 locCycles = cycles;
-                int timeCount = 0;
                 while (locCycles == cycles) {
                     if (isCancelled()) {
                         break;
@@ -451,8 +512,6 @@ public class Controller {
                         System.out.println("Time expiered");
                     }
                 }
-                //errorData.getData().add(new XYChart.Data<>(locCycles, errors));
-                //timeData.getData().add(new XYChart.Data<>(locCycles, timeCount));
             }
             return 0;
         }

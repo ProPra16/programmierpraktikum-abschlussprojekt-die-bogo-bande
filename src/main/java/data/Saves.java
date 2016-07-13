@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 public class Saves {
 
@@ -34,6 +35,42 @@ public class Saves {
         } catch (IOException e) {
             System.out.println("Failed to save data");
         }
+    }
+
+    public static void saveErrors(String s,int i){
+        if(s.equals("No Errors")) {
+        return;
+        }
+        final Path path = Paths.get("build/resources/main/saves/allerrors.txt");
+        final Path path2 = Paths.get("build/resources/main/saves/temperrors.txt");
+        try {
+            if(i==0){
+                if(s.equals("all")) Files.write(path, "All Session Errors:updated if continue is hitted\n".getBytes());
+                if(s.equals("temp")) Files.write(path2, "You can watch all of your errors in this session in following file:allerrors.txt\n".getBytes());
+            }else {
+                Files.write(path, s.getBytes(), StandardOpenOption.APPEND);
+                Files.write(path2, s.getBytes(), StandardOpenOption.APPEND);
+            }
+        }catch (IOException e) {
+            System.out.println("Failed to save Errors");
+        }
+    }
+
+    public static String loadErrors() {
+        final Path path2 = Paths.get("build/resources/main/saves/temperrors.txt");
+        String out;
+        out = null;
+        try {
+            out = "";
+            for (String x : Files.readAllLines(path2)) {
+                out = out + x + "\n";
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to load Errors");
+
+        }
+        return out;
+
     }
 
 

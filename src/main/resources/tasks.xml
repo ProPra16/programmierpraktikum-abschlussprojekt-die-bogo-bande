@@ -49,7 +49,7 @@ public class TestTest{
 }
             </test>
         <config>
-            <babysteps value="True" time="12"/><!-- value false or true only; time in seconds!-->
+            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
             <timetracking value="True" />
         </config>
     </exercise>
@@ -71,6 +71,60 @@ public class TestTest{
             @Test
             public void aTest(){
             assertEquals(null,RomanNumberConverter.convert());
+            }
+
+            }
+        </test>
+        <config>
+            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
+            <timetracking value="True" />
+        </config>
+    </exercise>
+    <exercise name="Würfel">
+        <description>Programmiere einen Würfel</description>
+        <class name="Dice">
+            public class Dice{
+            public static int roll(){
+            return 0;
+            }
+            }
+        </class>
+        <test name="DiceTest">
+            import static org.junit.Assert.*;
+            import org.junit.Test;
+
+            public class DiceTest{
+
+            @Test
+            public void aTest(){
+            assertEquals(0,Dice.roll());
+            }
+
+            }
+        </test>
+        <config>
+            <babysteps value="True" time="120"/><!-- value false or true only; time in seconds!-->
+            <timetracking value="True" />
+        </config>
+    </exercise>
+    <exercise name="Münze">
+        <description>Programmiere einen Münzwurf</description>
+        <class name="Coin">
+            public class Coin{
+            public static int flip(){
+            return 0;
+            }
+            }
+        </class>
+        <test name="CoinTest">
+            import static org.junit.Assert.*;
+            import org.junit.Test;
+
+            public class CoinTest{
+
+            @Test
+            public void aTest(){
+            assertEquals(0,Coin.flip());
             }
 
             }

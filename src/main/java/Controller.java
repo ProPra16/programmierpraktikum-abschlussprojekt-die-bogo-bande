@@ -7,7 +7,6 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -25,7 +24,7 @@ import java.util.List;
 
 public class Controller {
 
-    private Stage stage = Main.primaryStage;
+    private Stage stage = Main.primaryStage;   //wir mögen globale Variablen  ;D
     private String serror="No Errors";
     private int methodeerror=0;
     private String s;
@@ -172,7 +171,7 @@ public class Controller {
                             s = "test";
                             Saves.saveData(tests, s);
                             methodeerror=1;
-                            return true;    //Momentan: nur dann wenn 1Test fehlschlägt darf der Benutzer weiterarbeiten
+                            return true;
                         }
                         else{
                             compileMessage.setFill(Color.BLACK);
@@ -453,7 +452,7 @@ public class Controller {
                             break;
                         }
 
-                        if (time == 11) {
+                        if (time == 20) {
                             countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
                         }
                         if (!(countdownVol == null)) {
@@ -527,7 +526,6 @@ public class Controller {
                 }
                 if (Volume.getVolume() != (float) (Volume.getMinVol() * (1 - (volSlider.getValue() / 100)))) {
                     Volume.setVolume((float) (Volume.getMinVol() * (1 - (volSlider.getValue() / 100))));
-                    System.out.print("K");
                 }
                 try {
                     Thread.sleep(100);

@@ -2,8 +2,6 @@ package sound;
 
 import data.Config;
 
-import javax.sound.sampled.FloatControl;
-
 public class Volume {
     private static float volume = Config.loadFloatFromConfig("SOUNDVOLUME");
     private static float minVol = new Sound("build/resources/main/sound/test.wav").getVolumeControl().getMinimum();

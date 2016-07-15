@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class Config {
 
-    private static Path configPath =Paths.get("build/resources/main/data/config.cfg"); //Paths.get("src/main/resources/data/config.cfg")//build Path falsch?
+    private static Path configPath =Paths.get("build/resources/main/data/config.cfg");
 
     public static float loadFloatFromConfig(String h){try {
             List<String> config = Files.readAllLines(configPath);

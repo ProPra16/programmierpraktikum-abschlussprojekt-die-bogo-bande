@@ -1,5 +1,5 @@
 <tasks>
-    <exercise name="Old">
+    <exercise name="Dateien selber auswählen">
         <description>fileload</description>
         <class name="TestCode">
             public class TestCode{
@@ -26,8 +26,8 @@
             <timetracking value="True" />
         </config>
     </exercise>
-    <exercise name="Test">
-        <description>Test ya Shit</description>
+    <exercise name="Grundgerüst">
+        <description>Standardgerüst</description>
             <class name="TestCode">
 public class TestCode{
      public static String convert(){

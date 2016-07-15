@@ -1,0 +1,2 @@
+Diese Software wird veröffentlch unter der Apache License 2.0.
+Siehe http://www.apache.org/licenses/LICENSE-2.0 für genauere Details.

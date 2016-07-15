@@ -39,7 +39,7 @@
                     <content>
                         <VBox fillWidth="true">
                             <children>
-                                <TextArea fx:id="code">
+                                <TextArea fx:id="code" prefHeight="500">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
@@ -64,7 +64,7 @@
         </StackPane>
         <Pane fx:id="button_pane" GridPane.columnIndex="1" GridPane.rowIndex="1">
             <children>
-                <ComboBox id="combo" fx:id="combo" editable="false" layoutY="0.0" layoutX="15.0" prefWidth="200"
+                <ComboBox id="combo" fx:id="combo" editable="false" layoutY="0.0" layoutX="15.0" prefWidth="255"
                           onAction="#task">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
@@ -99,10 +99,10 @@
                         </Button>
                     </children>
                 </VBox>
-                <VBox layoutX="150.0" layoutY="90.0" prefHeight="26.0" prefWidth="120.0">
+                <VBox layoutX="150.0" layoutY="45.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button fx:id="returnButton" mnemonicParsing="false" onAction="#returnTab" prefWidth="120.0"
-                                text="ReturntoTest">
+                                text="Return 2 Test">
                         </Button>
                     </children>
                 </VBox>
@@ -139,7 +139,7 @@
         <children>
             <LineChart fx:id="graph" layoutX="15.0" layoutY="-55.0" prefWidth="435.0" maxHeight="580.0">
                 <xAxis>
-                    <CategoryAxis label="Steps" />
+                    <CategoryAxis label="Steps"/>
                 </xAxis>
                 <yAxis>
                     <NumberAxis label="Time in sec" lowerBound="0" upperBound="10" tickUnit="1"/>
@@ -150,9 +150,9 @@
     <HBox GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="1" GridPane.rowSpan="2" alignment="CENTER"
           fx:id="graphShow2" visible="false">
         <children>
-            <LineChart fx:id="graph2" layoutX="15.0" layoutY="-55.0" prefWidth="435.0" maxHeight="580.0" >
+            <LineChart fx:id="graph2" layoutX="15.0" layoutY="-55.0" prefWidth="435.0" maxHeight="580.0">
                 <xAxis>
-                    <CategoryAxis label="Steps" />
+                    <CategoryAxis label="Steps"/>
                 </xAxis>
                 <yAxis>
                     <NumberAxis label="Number of Errors" lowerBound="0" upperBound="10" tickUnit="1"/>
@@ -164,12 +164,12 @@
           alignment="CENTER"
           fx:id="menu" visible="false">
         <children>
-            <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled"/>
-            <CheckBox fx:id="check_stalker" Text="Tracking Enabled"/>
-            <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
-                    majorTickUnit="25.0" max="100.0"
-                    prefHeight="31.0" prefWidth="564.0" showTickLabels="true"
-                    showTickMarks="true"/>
+                <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled    "/>
+                <CheckBox fx:id="check_stalker" Text="Tracking Enabled    "/>
+                <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
+                        majorTickUnit="25.0" max="100.0"
+                        prefHeight="31.0" prefWidth="200.0" showTickLabels="true"
+                        showTickMarks="true"/>
         </children>
     </HBox>
     <Pane GridPane.columnIndex="2" GridPane.rowIndex="0">

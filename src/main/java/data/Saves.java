@@ -90,7 +90,7 @@ public class Saves {
             return file.getPath();
 
         } catch (Exception e) {
-            return null;
+            return "#ERROR";
         }
     }
 }

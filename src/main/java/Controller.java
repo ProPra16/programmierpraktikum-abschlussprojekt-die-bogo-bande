@@ -418,13 +418,20 @@ public class Controller {
             compileMessage.setFill(Color.BLACK);
             compileMessage.setText("Write a failing Test");
             if (Main.taskid == 0) {
-                s = Saves.chooseFile(stage,0);
+                s = Saves.chooseFile(stage, 0);
+                while(s.equals("#ERROR")){
+                    System.out.println("U cant escape!");
+                    s = Saves.chooseFile(stage, 0);
+                }
                 Saves.loadData(tests, s);
             } else {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
-                s=Saves.chooseFile(stage,1);
+                s = Saves.chooseFile(stage, 1);
+                while(s.equals("#ERROR")){
+                    s = Saves.chooseFile(stage, 1);
+                }
                 Saves.loadData(code, s);
             } else {
                 code.setText(tasks.getClass(index));

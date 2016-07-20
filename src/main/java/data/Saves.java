@@ -17,6 +17,10 @@ public class Saves {
         final Path path = Paths.get(s);
         try {
             String out = "";
+            if (!Files.exists(path)) {
+                Saves.saveDatahelper(textArea, s); //erstellt eine textdatei falls nicht vorhanden
+                System.out.print("erstellt neue Datei");
+            }                                      //in diesem Fall immer einer leere
             for (String x : Files.readAllLines(path)) {
                 out = out + x + "\n";
             }
@@ -26,6 +30,15 @@ public class Saves {
 
         }
 
+    }
+
+    public static void saveDatahelper(TextArea texter, String file) {
+        final Path path = Paths.get(file);
+        try {
+            Files.write(path, texter.getParagraphs());
+        } catch (IOException e) {
+            System.out.println("Failed to save data");
+        }
     }
 
     public static void saveData(TextArea texter, String file) {

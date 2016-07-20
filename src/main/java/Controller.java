@@ -1,3 +1,4 @@
+import com.sun.javafx.tk.Toolkit;
 import data.Config;
 import data.Saves;
 import data.TaskDecoder;
@@ -22,6 +23,8 @@ import vk.core.api.JavaStringCompiler;
 import java.util.ArrayList;
 import java.util.List;
 
+import static sun.misc.PostVMInitHook.run;
+
 public class Controller {
 
     private Stage stage = Main.primaryStage;   //wir mögen globale Variablen  ;D
@@ -35,7 +38,8 @@ public class Controller {
     private int graphhelper = 0;
     private int errors = 0;
     private int pause =0;            //"pausiert" gegebenenfalls den Babysteptimer
-    private enum Status {TEST, CODE, REFACTOR}
+    private enum Status {TEST, CODE, REFACTOR};
+    Sound countdownVol = null;
 
     @FXML
     public Slider volSlider;
@@ -49,6 +53,8 @@ public class Controller {
     private Button saveButton;
     @FXML
     private Button statsButton;
+    @FXML
+    private Button menueButton;
     @FXML
     private Text compileMessage;
     @FXML
@@ -91,6 +97,8 @@ public class Controller {
         initializeTaskSelection();
         stage.setOnCloseRequest(event -> {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
+            if (timer.isRunning()) timer.cancel();
+            if(getVolume.isRunning()) getVolume.cancel();
             stage.close();
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
@@ -286,6 +294,38 @@ public class Controller {
         compileMessage.setText("You returned to Test.You code has been resetted");
         Saves.loadData(code,"build/resources/main/saves/code.txt");
     }
+    @FXML
+    protected void menueTab(ActionEvent event){
+        /*String s ="lastcode";
+        String t ="lasttest";
+        Saves.saveData(code,s);
+        Saves.saveData(tests,t);
+        code.setText("");
+        tests.setText("");
+        compileButton.setDisable(true);
+        continueButton.setDisable(true);
+        saveButton.setDisable(true);
+        returnButton.setDisable(true);
+        statsButton.setDisable(true);
+        pause=1;
+        if(countdownVol!=null){
+            countdownVol.ende();
+        }
+
+        babysteps.setText("");
+        compileMessage.setText("");
+        tabs.setDisable(true);
+        code.setDisable(true);
+        tests.setDisable(true);
+        combo.setDisable(false);
+        statusMessage.setText("Select a Task");
+        //if (timer.isRunning()) timer.cancel();
+        if(getVolume.isRunning()) getVolume.cancel();
+        if (!check_the_baby.isSelected() && babyStepsTimer.isRunning()) {
+            getVolume.cancel();
+            babyStepsTimer.cancel();
+        }*/
+        }
 
     @FXML
     protected void continueTab(ActionEvent event) {
@@ -428,18 +468,20 @@ public class Controller {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
+                pause=0;
                 s = Saves.chooseFile(stage, 1);
                 while(s.equals("#ERROR")){
                     s = Saves.chooseFile(stage, 1);
                 }
                 Saves.loadData(code, s);
             } else {
+                pause=0;
                 code.setText(tasks.getClass(index));
             }
             String t="code";
+            t="test";
             Saves.saveData(code,"code");
             Saves.saveData(tests,"test");
-            t="test";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -451,7 +493,6 @@ public class Controller {
         @Override
         protected Integer call() throws Exception {
             TaskDecoder tasks = new TaskDecoder();
-            Sound countdownVol = null;
             while (!isCancelled()) {
                 for (time = tasks.getBabystepsTime(Main.taskid); time >= 0; time--) {
                     if (pause == 0) {
@@ -459,7 +500,7 @@ public class Controller {
                             break;
                         }
 
-                        if (time == 20) {
+                        if (time == 5) {
                             countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
                         }
                         if (!(countdownVol == null)) {

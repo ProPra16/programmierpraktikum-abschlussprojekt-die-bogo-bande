@@ -37,6 +37,15 @@ public class Saves {
         }
     }
 
+    public static void saveData2(TextArea texter, String file) {
+        final Path path = Paths.get("build/resources/main/saves/" + file + ".txt");
+        try {
+            Files.write(path, texter.getParagraphs(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            System.out.println("Failed to save data");
+        }
+    }
+
     public static void saveErrors(String s,int i){
         if(s.equals("No Errors")) {
         return;

@@ -88,14 +88,14 @@
                 <VBox layoutX="150.0" layoutY="90.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
                         <Button fx:id="MenueButton" mnemonicParsing="false" onAction="#menueTab" prefWidth="120.0"
-                                text="Return to Menue">
-                            <graphic>
-                                <ImageView>
-                                    <image>
-                                        <Image url="images/arrow_right.png"/>
-                                    </image>
-                                </ImageView>
-                            </graphic>
+                                text="Menue">
+                        </Button>
+                    </children>
+                </VBox>
+                <VBox layoutX="150.0" layoutY="135.0" prefHeight="26.0" prefWidth="120.0">
+                    <children>
+                        <Button fx:id="entButton" mnemonicParsing="false" onAction="#entTab" prefWidth="120.0"
+                                text="Entwicklung">
                         </Button>
                     </children>
                 </VBox>

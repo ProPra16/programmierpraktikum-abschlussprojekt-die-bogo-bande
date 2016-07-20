@@ -56,6 +56,8 @@ public class Controller {
     @FXML
     private Button menueButton;
     @FXML
+    private Button entButton;
+    @FXML
     private Text compileMessage;
     @FXML
     private Text statusMessage;
@@ -105,6 +107,8 @@ public class Controller {
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
         statsButton.setVisible(check_stalker.isSelected());
         saveButton.setVisible(false);
+        Saves.saveData(code,"codechange");
+        Saves.saveData(tests,"testchange");
         returnButton.setDisable(true);
         volSlider.setValue(100+(((Config.loadFloatFromConfig("SOUNDVOLUME")/80)*100)));
 
@@ -127,6 +131,26 @@ public class Controller {
 
         Saves.saveErrors("temp",0);
         Saves.saveErrors("all",0);
+    }
+
+    @FXML
+    protected void entTab(ActionEvent event){
+        if(!entButton.getText().equals("To Programm")) {
+            entButton.setText("To Programm");
+            Saves.loadData(code,"build/resources/main/saves/codechange.txt");
+            Saves.loadData(tests,"build/resources/main/saves/testchange.txt");
+            pause = 0;  //Babysteps wird angehalten
+            //code.setDisable(true);   Es ist egal, ob der Benutzer in dieser Datei was ändert, gespeichert wird es nicht.
+            //tests.setDisable(true);
+        }else {
+            pause =1;
+            entButton.setText("Entwicklung");
+            Saves.loadData(code,"build/resources/main/saves/code.txt");
+            Saves.loadData(tests,"build/resources/main/saves/test.txt");
+            //code.setDisable(false);   Es ist egal, ob der Benutzer in dieser Datei was ändert, gespeichert wird es nicht.
+            //tests.setDisable(false);
+        }
+
     }
 
     @FXML
@@ -346,6 +370,8 @@ public class Controller {
             serror="";
             errors = 0;
             timeCount=0;
+            String strin="codechange";
+            Saves.saveData2(code,strin);
 
             try {
                 time = new TaskDecoder().getBabystepsTime(Main.taskid);
@@ -369,6 +395,8 @@ public class Controller {
             Saves.saveErrors(serror,1);
             serror="";
             pause=1;
+            String strin="testchange";
+            Saves.saveData2(tests,strin);
 
 
         } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
@@ -388,6 +416,10 @@ public class Controller {
             serror="No Errors";
             graphhelper++;
             pause=0;
+            String strin="testchange";
+            Saves.saveData2(tests,strin);
+            strin="codechange";
+            Saves.saveData2(code,strin);
 
         }
     }

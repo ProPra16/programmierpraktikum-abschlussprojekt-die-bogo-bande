@@ -109,6 +109,8 @@ public class Controller {
         saveButton.setVisible(false);
         Saves.saveData(code,"codechange");
         Saves.saveData(tests,"testchange");
+        Saves.saveData(code,"code");
+        Saves.saveData(tests,"test");
         returnButton.setDisable(true);
         volSlider.setValue(100+(((Config.loadFloatFromConfig("SOUNDVOLUME")/80)*100)));
 
@@ -370,8 +372,8 @@ public class Controller {
             serror="";
             errors = 0;
             timeCount=0;
-            String strin="codechange";
-            Saves.saveData2(code,strin);
+            String strin="testchange";
+            Saves.saveData2(tests,strin);
 
             try {
                 time = new TaskDecoder().getBabystepsTime(Main.taskid);
@@ -395,8 +397,9 @@ public class Controller {
             Saves.saveErrors(serror,1);
             serror="";
             pause=1;
-            String strin="testchange";
-            Saves.saveData2(tests,strin);
+            String strin="codechange";
+            Saves.saveData2(code,strin);
+
 
 
         } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
@@ -514,6 +517,8 @@ public class Controller {
             t="test";
             Saves.saveData(code,"code");
             Saves.saveData(tests,"test");
+            Saves.saveData(code,"codechange");
+            Saves.saveData(tests,"testchange");
         } catch (Exception e) {
             e.printStackTrace();
         }

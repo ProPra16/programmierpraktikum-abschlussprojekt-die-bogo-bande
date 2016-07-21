@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.LineChart?>
@@ -9,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.chart.CategoryAxis?>
-<GridPane stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<GridPane fx:id="HS"  stylesheets="TDDT.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0"/>
@@ -87,7 +86,7 @@
                 </VBox>
                 <VBox layoutX="150.0" layoutY="90.0" prefHeight="26.0" prefWidth="120.0">
                     <children>
-                        <Button fx:id="MenueButton" mnemonicParsing="false" onAction="#menueTab" prefWidth="120.0"
+                        <Button mnemonicParsing="false" onAction="#menueTab" prefWidth="120.0"
                                 text="Menue">
                         </Button>
                     </children>

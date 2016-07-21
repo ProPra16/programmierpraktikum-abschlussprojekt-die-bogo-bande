@@ -7,9 +7,13 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -20,6 +24,7 @@ import vk.core.api.CompilationUnit;
 import vk.core.api.CompilerFactory;
 import vk.core.api.JavaStringCompiler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +46,9 @@ public class Controller {
     private enum Status {TEST, CODE, REFACTOR};
     Sound countdownVol = null;
 
+
+    @FXML
+    public GridPane HS;
     @FXML
     public Slider volSlider;
     @FXML
@@ -53,8 +61,6 @@ public class Controller {
     private Button saveButton;
     @FXML
     private Button statsButton;
-    @FXML
-    private Button menueButton;
     @FXML
     private Button entButton;
     @FXML
@@ -97,6 +103,8 @@ public class Controller {
     @FXML
     protected void initialize() {
         initializeTaskSelection();
+        HS.setPrefWidth(stage.getWidth());
+        HS.setPrefHeight(stage.getHeight());
         stage.setOnCloseRequest(event -> {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             if (timer.isRunning()) timer.cancel();
@@ -321,7 +329,19 @@ public class Controller {
         Saves.loadData(code,"build/resources/main/saves/code.txt");
     }
     @FXML
-    protected void menueTab(ActionEvent event){
+    protected void menueTab(ActionEvent event) throws IOException {
+        if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
+        if (timer.isRunning()) timer.cancel();
+        if(getVolume.isRunning()) getVolume.cancel();
+
+        Parent root = FXMLLoader.load(getClass().getResource("TDDT.fxml"));
+        root.getStylesheets().add("TDDT.css");
+        root.applyCss();
+        stage.setTitle("TDDP - Select Task");
+        stage.setScene(new Scene(root));
+        stage.setMaximized(true);
+        stage.show();
+
         /*String s ="lastcode";
         String t ="lasttest";
         Saves.saveData(code,s);

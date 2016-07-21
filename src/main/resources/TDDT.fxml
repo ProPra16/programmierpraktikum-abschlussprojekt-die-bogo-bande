@@ -179,6 +179,7 @@
         <children>
                 <CheckBox fx:id="check_the_baby" Text="Babysteps Enabled    "/>
                 <CheckBox fx:id="check_stalker" Text="Tracking Enabled    "/>
+                 <CheckBox fx:id="partyhard" Text="Party Feature(Achtung: Epilepsie Warnung) Enabled    "/>
                 <Slider fx:id="volSlider" blockIncrement="1.0" layoutX="19.0" layoutY="20.0"
                         majorTickUnit="25.0" max="100.0"
                         prefHeight="31.0" prefWidth="200.0" showTickLabels="true"

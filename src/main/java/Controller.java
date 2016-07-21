@@ -8,13 +8,13 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -84,6 +84,8 @@ public class Controller {
     @FXML
     private CheckBox check_the_baby;
     @FXML
+    private CheckBox partyhard;
+    @FXML
     private CheckBox check_stalker;
     @FXML
     private HBox menu;
@@ -109,6 +111,7 @@ public class Controller {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             if (timer.isRunning()) timer.cancel();
             if(getVolume.isRunning()) getVolume.cancel();
+            if(party.isRunning()) party.cancel();
             stage.close();
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
@@ -333,6 +336,7 @@ public class Controller {
         if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
         if (timer.isRunning()) timer.cancel();
         if(getVolume.isRunning()) getVolume.cancel();
+        if(party.isRunning()) party.cancel();
 
         Parent root = FXMLLoader.load(getClass().getResource("TDDT.fxml"));
         root.getStylesheets().add("TDDT.css");
@@ -453,6 +457,8 @@ public class Controller {
             menu.setVisible(false);
             Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
             Config.saveConfig("TRACKING",check_stalker.isSelected());
+            if(partyhard.isSelected())new Thread(party).start();
+            else party.cancel();
             statsButton.setVisible(check_stalker.isSelected());
         } else {
             menu.setVisible(true);
@@ -570,8 +576,6 @@ public class Controller {
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException interrupted) {
-
-                            System.out.println("tasks over");
                         }
                         if (time == 0) {
                             if (countdownVol != null) {
@@ -640,6 +644,39 @@ public class Controller {
             }
             return 0;
         }
+    };
+
+    private Task<Integer>  party = new Task<Integer>() {
+
+        @Override
+        protected Integer call() throws Exception {
+            BackgroundFill xyz[][] = new BackgroundFill[6][1];
+            xyz[0][0] = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY,Insets.EMPTY);
+            xyz[1][0] = new BackgroundFill(Color.RED, CornerRadii.EMPTY,Insets.EMPTY);
+            xyz[2][0] = new BackgroundFill(Color.BLUE, CornerRadii.EMPTY,Insets.EMPTY);
+            xyz[3][0] = new BackgroundFill(Color.YELLOWGREEN, CornerRadii.EMPTY,Insets.EMPTY);
+            xyz[4][0] = new BackgroundFill(Color.CORAL, CornerRadii.EMPTY,Insets.EMPTY);
+            xyz[5][0] = new BackgroundFill(Color.SILVER, CornerRadii.EMPTY,Insets.EMPTY);
+            int i = 0;
+
+            System.out.println("Start");
+            while (!isCancelled()) {
+                if (isCancelled()) {
+                    break;
+                }
+                HS.setBackground(new Background(xyz[i]));
+                i++;
+                if(i>5)i=0;
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException interrupted) {
+                    System.out.println(interrupted.getMessage());
+                }
+            }
+            return 0;
+        }
+
     };
 }
 

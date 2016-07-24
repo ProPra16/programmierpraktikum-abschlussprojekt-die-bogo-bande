@@ -118,15 +118,9 @@ public class Controller {
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
         statsButton.setVisible(check_stalker.isSelected());
         saveButton.setVisible(false);
-        Saves.saveData(code, "codechange");
-        Saves.saveData(tests, "testchange");
-        Saves.saveData(code, "code");
-        Saves.saveData(tests, "test");
         returnButton.setDisable(true);
         volSlider.setValue(100 + (((Config.loadFloatFromConfig("SOUNDVOLUME") / 80) * 100)));
-
         statusMessage.setText("Select a Task");
-
         ObservableList<XYChart.Series<String, Integer>> lineChartData = FXCollections.observableArrayList();
         ObservableList<XYChart.Series<String, Integer>> lineChartData2 = FXCollections.observableArrayList();
         graph.setTranslateX(-205.0);
@@ -141,9 +135,6 @@ public class Controller {
         graph.createSymbolsProperty();
         graph2.setData(lineChartData2);
         graph2.createSymbolsProperty();
-
-        Saves.saveErrors("temp", 0);
-        Saves.saveErrors("all", 0);
     }
 
     @FXML
@@ -541,10 +532,6 @@ public class Controller {
             }
             String t = "code";
             t = "test";
-            Saves.saveData(code, "code");
-            Saves.saveData(tests, "test");
-            Saves.saveData(code, "codechange");
-            Saves.saveData(tests, "testchange");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -616,7 +603,6 @@ public class Controller {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException interrupted) {
-                        System.out.println("Time expiered");
                     }
                 }
             }

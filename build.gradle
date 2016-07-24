@@ -1,16 +1,23 @@
 apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'application'
 
-sourceCompatibility = 1.8
-applicationName = 'TDDT'
-mainClassName = 'Main'
-
-repositories {
+repositories{
     mavenCentral()
 }
 
 dependencies {
     compile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'de.hhu.stups', name: 'virtual-kata-lib', version: '1.0.0'
+}
+
+jar {
+    baseName = 'TDDT'
+    version =  '1.0'
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
 }

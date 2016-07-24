@@ -1,5 +1,7 @@
 apply plugin: 'java'
 
+def global_version = '1.0'
+
 repositories{
     mavenCentral()
 }
@@ -11,9 +13,21 @@ dependencies {
 
 jar {
     baseName = 'TDDT'
-    version =  '1.0'
+    version =  global_version
     manifest {
         attributes 'Main-Class': 'Main'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+
+}
+
+task manageBuild {
+    copy {
+        from 'build/libs/'
+        into 'build/'
+    }
+}
+
+assemble.doLast {
+    manageBuild
 }

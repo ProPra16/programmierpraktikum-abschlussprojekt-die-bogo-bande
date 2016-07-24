@@ -1,4 +1,7 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "Main"
 
 def global_version = '1.0'
 
@@ -22,6 +25,10 @@ jar {
 }
 
 task manageBuild {
+    copy {
+        from 'build/resources/main/'
+        into 'build/classes/main/'
+    }
     copy {
         from 'build/libs/'
         into 'build/'

@@ -1,4 +1,3 @@
-import com.sun.javafx.tk.Toolkit;
 import data.Config;
 import data.Saves;
 import data.TaskDecoder;
@@ -28,22 +27,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static sun.misc.PostVMInitHook.run;
-
 public class Controller {
 
     private Stage stage = Main.primaryStage;   //wir mögen globale Variablen  ;D
-    private String serror="No Errors";
-    private int methodeerror=0;
+    private String serror = "No Errors";
+    private int methodeerror = 0;
     private String s;
     private int time;
-    private int locCycles=0;
+    private int locCycles = 0;
     private int timeCount = 0;
     private int cycles = 0;
     private int graphhelper = 0;
     private int errors = 0;
-    private int pause =0;            //"pausiert" gegebenenfalls den Babysteptimer
-    private enum Status {TEST, CODE, REFACTOR};
+    private int pause = 0;            //"pausiert" gegebenenfalls den Babysteptimer
+
+    private enum Status {TEST, CODE, REFACTOR}
+
+    ;
     Sound countdownVol = null;
 
 
@@ -110,20 +110,20 @@ public class Controller {
         stage.setOnCloseRequest(event -> {
             if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
             if (timer.isRunning()) timer.cancel();
-            if(getVolume.isRunning()) getVolume.cancel();
-            if(party.isRunning()) party.cancel();
+            if (getVolume.isRunning()) getVolume.cancel();
+            if (party.isRunning()) party.cancel();
             stage.close();
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
         check_stalker.setSelected(Config.loadBoolFromConfig("TRACKING"));
         statsButton.setVisible(check_stalker.isSelected());
         saveButton.setVisible(false);
-        Saves.saveData(code,"codechange");
-        Saves.saveData(tests,"testchange");
-        Saves.saveData(code,"code");
-        Saves.saveData(tests,"test");
+        Saves.saveData(code, "codechange");
+        Saves.saveData(tests, "testchange");
+        Saves.saveData(code, "code");
+        Saves.saveData(tests, "test");
         returnButton.setDisable(true);
-        volSlider.setValue(100+(((Config.loadFloatFromConfig("SOUNDVOLUME")/80)*100)));
+        volSlider.setValue(100 + (((Config.loadFloatFromConfig("SOUNDVOLUME") / 80) * 100)));
 
         statusMessage.setText("Select a Task");
 
@@ -142,24 +142,24 @@ public class Controller {
         graph2.setData(lineChartData2);
         graph2.createSymbolsProperty();
 
-        Saves.saveErrors("temp",0);
-        Saves.saveErrors("all",0);
+        Saves.saveErrors("temp", 0);
+        Saves.saveErrors("all", 0);
     }
 
     @FXML
-    protected void entTab(ActionEvent event){
-        if(!entButton.getText().equals("To Programm")) {
+    protected void entTab(ActionEvent event) {
+        if (!entButton.getText().equals("To Programm")) {
             entButton.setText("To Programm");
-            Saves.loadData(code,"build/resources/main/saves/codechange.txt");
-            Saves.loadData(tests,"build/resources/main/saves/testchange.txt");
+            Saves.loadData(code, "saves/codechange.txt");
+            Saves.loadData(tests, "saves/testchange.txt");
             pause = 0;  //Babysteps wird angehalten
             //code.setDisable(true);   Es ist egal, ob der Benutzer in dieser Datei was ändert, gespeichert wird es nicht.
             //tests.setDisable(true);
-        }else {
-            pause =1;
+        } else {
+            pause = 1;
             entButton.setText("Entwicklung");
-            Saves.loadData(code,"build/resources/main/saves/code.txt");
-            Saves.loadData(tests,"build/resources/main/saves/test.txt");
+            Saves.loadData(code, "saves/code.txt");
+            Saves.loadData(tests, "saves/test.txt");
             //code.setDisable(false);   Es ist egal, ob der Benutzer in dieser Datei was ändert, gespeichert wird es nicht.
             //tests.setDisable(false);
         }
@@ -182,7 +182,7 @@ public class Controller {
     protected boolean compile(ActionEvent event) {
         if (statusMessage.getText().equals(Status.TEST.toString())) {
             try {
-                Saves.saveErrors("temp",0);
+                Saves.saveErrors("temp", 0);
                 TaskDecoder tasks = new TaskDecoder();
                 CompilationUnit testCompilationUnit = new CompilationUnit(tasks.getTestName(Main.taskid), tests.getText(), true);
                 CompilationUnit codeCompilationUnit = new CompilationUnit(tasks.getClassName(Main.taskid), code.getText(), false);
@@ -190,10 +190,10 @@ public class Controller {
                 testJavaStringCompiler.compileAndRunTests();
                 errors += testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size();
                 if (testJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
-                    if(!serror.contains("Test Errors"))serror="Testerrors:";
-                    serror=serror + "\n" + testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString();
-                    if (testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size()==1){
-                        if(testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString().contains(":error:cannot find symbol\n  symbol:   method")) { // symbol:   method
+                    if (!serror.contains("Test Errors")) serror = "Testerrors:";
+                    serror = serror + "\n" + testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString();
+                    if (testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).size() == 1) {
+                        if (testJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString().contains(":error:cannot find symbol\n  symbol:   method")) { // symbol:   method
                             compileMessage.setFill(Color.GREEN);
                             compileMessage.setText("Error:Methode not found...You may continue if you want to write a new Methode");
                             s = "test";
@@ -215,10 +215,9 @@ public class Controller {
                             compileMessage.setText("No Errors while compiling\nYou wrote a failing Test, hit [continue]");
                             s = "test";
                             Saves.saveData(tests, s);
-                            methodeerror=1;
+                            methodeerror = 1;
                             return true;
-                        }
-                        else{
+                        } else {
                             compileMessage.setFill(Color.BLACK);
                             compileMessage.setText("You wrote to many failed Tests. You are only allowed to write one failing Test!");
                         }
@@ -242,8 +241,8 @@ public class Controller {
                 codeJavaStringCompiler.compileAndRunTests();
                 errors += codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).size();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {
-                    if(!serror.contains("Code Errors"))serror=serror + "\n" + "Code Errors:";
-                    serror=serror + "\n" + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString();
+                    if (!serror.contains("Code Errors")) serror = serror + "\n" + "Code Errors:";
+                    serror = serror + "\n" + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString();
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
                     compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
@@ -278,8 +277,8 @@ public class Controller {
                 codeJavaStringCompiler.compileAndRunTests();
                 errors += codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).size();
                 if (codeJavaStringCompiler.getCompilerResult().hasCompileErrors()) {    //hier fehlen testerrors!!!!!!
-                    if(!serror.contains("Refactor Errors"))serror=serror + "\n" + "Refactor Errors:";
-                    serror=serror + "\n" + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString();
+                    if (!serror.contains("Refactor Errors")) serror = serror + "\n" + "Refactor Errors:";
+                    serror = serror + "\n" + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString();
                     compileMessage.setFill(Color.RED);
                     continueButton.setDisable(true);
                     compileMessage.setText(codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(codeCompilationUnit).toString() + codeJavaStringCompiler.getCompilerResult().getCompilerErrorsForCompilationUnit(testCompilationUnit).toString());
@@ -297,7 +296,7 @@ public class Controller {
                         compileMessage.setText("No Errors while compiling\n" + codeJavaStringCompiler.getTestResult().getNumberOfSuccessfulTests() + " tests succeded");
                         s = "code";
                         Saves.saveData(code, s);
-                        s= "test";
+                        s = "test";
                         Saves.saveData(tests, s);
                         return true;        //nur dann wenn alles compiliert und alle tests durchlaufen, kann der Benutzer
                     }                       //weiter machen und alles wird gespeichert
@@ -309,18 +308,20 @@ public class Controller {
         }
         return false;
     }
-    @FXML
-    protected void savetab(ActionEvent event){
 
-        String s ="lastcode";
-        String t ="lasttest";
-        Saves.saveData(code,s);
-        Saves.saveData(tests,t);
+    @FXML
+    protected void savetab(ActionEvent event) {
+
+        String s = "lastcode";
+        String t = "lasttest";
+        Saves.saveData(code, s);
+        Saves.saveData(tests, t);
         compileMessage.setFill(Color.GREEN);
         compileMessage.setText("Data saved to lastcode.txt and lasttest.txt");
     }
+
     @FXML
-    protected void returnTab(ActionEvent event){
+    protected void returnTab(ActionEvent event) {
         statusMessage.setFill(Color.RED);
         statusMessage.setText(Status.TEST.toString());
         code.setDisable(true);
@@ -329,14 +330,15 @@ public class Controller {
         tabs.getSelectionModel().select(tab_tests);
         compileMessage.setFill(Color.BLACK);
         compileMessage.setText("You returned to Test.You code has been resetted");
-        Saves.loadData(code,"build/resources/main/saves/code.txt");
+        Saves.loadData(code, "saves/code.txt");
     }
+
     @FXML
     protected void menueTab(ActionEvent event) throws IOException {
         if (babyStepsTimer.isRunning()) babyStepsTimer.cancel();
         if (timer.isRunning()) timer.cancel();
-        if(getVolume.isRunning()) getVolume.cancel();
-        if(party.isRunning()) party.cancel();
+        if (getVolume.isRunning()) getVolume.cancel();
+        if (party.isRunning()) party.cancel();
 
         Parent root = FXMLLoader.load(getClass().getResource("TDDT.fxml"));
         root.getStylesheets().add("TDDT.css");
@@ -375,12 +377,12 @@ public class Controller {
             getVolume.cancel();
             babyStepsTimer.cancel();
         }*/
-        }
+    }
 
     @FXML
     protected void continueTab(ActionEvent event) {
-        if ((compile(null) && statusMessage.getText().equals(Status.TEST.toString())) || methodeerror==1) {
-            methodeerror=0;
+        if ((compile(null) && statusMessage.getText().equals(Status.TEST.toString())) || methodeerror == 1) {
+            methodeerror = 0;
             returnButton.setDisable(false);
             cycles++;
             statusMessage.setText(Status.CODE.toString());
@@ -392,12 +394,12 @@ public class Controller {
             compileMessage.setText("Write some code!");
             timeData.getData().add(new XYChart.Data<>("Test" + graphhelper, timeCount));
             errorData.getData().add(new XYChart.Data<>("Test" + graphhelper, errors));
-            Saves.saveErrors(serror,1);
-            serror="";
+            Saves.saveErrors(serror, 1);
+            serror = "";
             errors = 0;
-            timeCount=0;
-            String strin="testchange";
-            Saves.saveData2(tests,strin);
+            timeCount = 0;
+            String strin = "testchange";
+            Saves.saveData2(tests, strin);
 
             try {
                 time = new TaskDecoder().getBabystepsTime(Main.taskid);
@@ -415,15 +417,14 @@ public class Controller {
             code.setDisable(false);
             continueButton.setDisable(true);
             timeData.getData().add(new XYChart.Data<>("Code" + graphhelper, timeCount));
-            timeCount=0;
+            timeCount = 0;
             errorData.getData().add(new XYChart.Data<>("Code" + graphhelper, errors));
             errors = 0;
-            Saves.saveErrors(serror,1);
-            serror="";
-            pause=1;
-            String strin="codechange";
-            Saves.saveData2(code,strin);
-
+            Saves.saveErrors(serror, 1);
+            serror = "";
+            pause = 1;
+            String strin = "codechange";
+            Saves.saveData2(code, strin);
 
 
         } else if (compile(null) && statusMessage.getText().equals(Status.REFACTOR.toString())) {
@@ -436,17 +437,17 @@ public class Controller {
             code.setDisable(true);
             continueButton.setDisable(true);
             timeData.getData().add(new XYChart.Data<>("Refactor" + graphhelper, timeCount));
-            timeCount=0;
+            timeCount = 0;
             errorData.getData().add(new XYChart.Data<>("Refactor" + graphhelper, errors));
             errors = 0;
-            Saves.saveErrors(serror,1);
-            serror="No Errors";
+            Saves.saveErrors(serror, 1);
+            serror = "No Errors";
             graphhelper++;
-            pause=0;
-            String strin="testchange";
-            Saves.saveData2(tests,strin);
-            strin="codechange";
-            Saves.saveData2(code,strin);
+            pause = 0;
+            String strin = "testchange";
+            Saves.saveData2(tests, strin);
+            strin = "codechange";
+            Saves.saveData2(code, strin);
 
         }
     }
@@ -456,8 +457,8 @@ public class Controller {
         if (menu.isVisible()) {
             menu.setVisible(false);
             Config.saveConfig("ENABLE_BABYSTEPS", check_the_baby.isSelected());
-            Config.saveConfig("TRACKING",check_stalker.isSelected());
-            if(partyhard.isSelected())new Thread(party).start();
+            Config.saveConfig("TRACKING", check_stalker.isSelected());
+            if (partyhard.isSelected()) new Thread(party).start();
             else party.cancel();
             statsButton.setVisible(check_stalker.isSelected());
         } else {
@@ -468,17 +469,16 @@ public class Controller {
 
     @FXML
     protected void stats(ActionEvent event) {
-        if (graphShow.isVisible()){
+        if (graphShow.isVisible()) {
             graphShow.setVisible(false);
             graphShow2.setVisible(false);
-        }
-        else {
+        } else {
             graphShow.setVisible(true);
             graphShow2.setVisible(true);
-            serror=Saves.loadErrors();
+            serror = Saves.loadErrors();
             compileMessage.setFill(Color.RED);
             compileMessage.setText(serror);
-            serror="No Errors";
+            serror = "No Errors";
         }
     }
 
@@ -520,7 +520,7 @@ public class Controller {
             compileMessage.setText("Write a failing Test");
             if (Main.taskid == 0) {
                 s = Saves.chooseFile(stage, 0);
-                while(s.equals("#ERROR")){
+                while (s.equals("#ERROR")) {
                     System.out.println("U cant escape!");
                     s = Saves.chooseFile(stage, 0);
                 }
@@ -529,22 +529,22 @@ public class Controller {
                 tests.setText(tasks.getTest(index));
             }
             if (Main.taskid == 0) {
-                pause=0;
+                pause = 0;
                 s = Saves.chooseFile(stage, 1);
-                while(s.equals("#ERROR")){
+                while (s.equals("#ERROR")) {
                     s = Saves.chooseFile(stage, 1);
                 }
                 Saves.loadData(code, s);
             } else {
-                pause=0;
+                pause = 0;
                 code.setText(tasks.getClass(index));
             }
-            String t="code";
-            t="test";
-            Saves.saveData(code,"code");
-            Saves.saveData(tests,"test");
-            Saves.saveData(code,"codechange");
-            Saves.saveData(tests,"testchange");
+            String t = "code";
+            t = "test";
+            Saves.saveData(code, "code");
+            Saves.saveData(tests, "test");
+            Saves.saveData(code, "codechange");
+            Saves.saveData(tests, "testchange");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -564,7 +564,7 @@ public class Controller {
                         }
 
                         if (time == 5) {
-                            countdownVol = new Sound("build/resources/main/sound/countdown_boom.wav");
+                            countdownVol = new Sound("sound/countdown_boom.wav");
                         }
                         if (!(countdownVol == null)) {
                             countdownVol.setVolume(Volume.getVolume());
@@ -583,18 +583,17 @@ public class Controller {
                                 countdownVol.ende();
                             }
                             babysteps.setText("Time: " + time + "s");
-                            if (!compile(null)){
-                                if(statusMessage.getText().equals(Status.CODE.toString()))
-                                returnTab(null);    //Wenn nicht compiliert geh zu test falls in code
-                                else if(statusMessage.getText().equals(Status.TEST.toString())) {  //wenn in test resette Tests
-                                    Saves.loadData(tests, "build/resources/main/saves/test.txt");
+                            if (!compile(null)) {
+                                if (statusMessage.getText().equals(Status.CODE.toString()))
+                                    returnTab(null);    //Wenn nicht compiliert geh zu test falls in code
+                                else if (statusMessage.getText().equals(Status.TEST.toString())) {  //wenn in test resette Tests
+                                    Saves.loadData(tests, "saves/test.txt");
                                     compileMessage.setFill(Color.RED);
                                     compileMessage.setText("Test resetted, weil Zeit abgelaufen ist");
                                 }
-                            }
-                            else continueTab(null);
+                            } else continueTab(null);
                         }
-                    }else{      // Wenn der User im Refactor abschnitt ist, gibt es kein Zeitlimit
+                    } else {      // Wenn der User im Refactor abschnitt ist, gibt es kein Zeitlimit
                         time = tasks.getBabystepsTime(Main.taskid);
                     }
                 }
@@ -639,24 +638,24 @@ public class Controller {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException interrupted) {
-                  System.out.println(interrupted.getMessage());
+                    System.out.println(interrupted.getMessage());
                 }
             }
             return 0;
         }
     };
 
-    private Task<Integer>  party = new Task<Integer>() {
+    private Task<Integer> party = new Task<Integer>() {
 
         @Override
         protected Integer call() throws Exception {
             BackgroundFill xyz[][] = new BackgroundFill[6][1];
-            xyz[0][0] = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY,Insets.EMPTY);
-            xyz[1][0] = new BackgroundFill(Color.RED, CornerRadii.EMPTY,Insets.EMPTY);
-            xyz[2][0] = new BackgroundFill(Color.BLUE, CornerRadii.EMPTY,Insets.EMPTY);
-            xyz[3][0] = new BackgroundFill(Color.YELLOWGREEN, CornerRadii.EMPTY,Insets.EMPTY);
-            xyz[4][0] = new BackgroundFill(Color.CORAL, CornerRadii.EMPTY,Insets.EMPTY);
-            xyz[5][0] = new BackgroundFill(Color.SILVER, CornerRadii.EMPTY,Insets.EMPTY);
+            xyz[0][0] = new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY);
+            xyz[1][0] = new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY);
+            xyz[2][0] = new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY);
+            xyz[3][0] = new BackgroundFill(Color.YELLOWGREEN, CornerRadii.EMPTY, Insets.EMPTY);
+            xyz[4][0] = new BackgroundFill(Color.CORAL, CornerRadii.EMPTY, Insets.EMPTY);
+            xyz[5][0] = new BackgroundFill(Color.SILVER, CornerRadii.EMPTY, Insets.EMPTY);
             int i = 0;
 
             System.out.println("Start");
@@ -666,7 +665,7 @@ public class Controller {
                 }
                 HS.setBackground(new Background(xyz[i]));
                 i++;
-                if(i>5)i=0;
+                if (i > 5) i = 0;
 
                 try {
                     Thread.sleep(100);

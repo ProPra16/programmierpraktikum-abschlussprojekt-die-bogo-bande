@@ -24,7 +24,7 @@ public class Sound {
         } catch (Exception e) {
             e.printStackTrace();
         }
-            volume = (FloatControl) soundClip.getControl(FloatControl.Type.MASTER_GAIN);
+        volume = (FloatControl) soundClip.getControl(FloatControl.Type.MASTER_GAIN);
 
     }
 
@@ -32,10 +32,12 @@ public class Sound {
         soundClip.start();
     }
 
-    public void ende(){soundClip.close();}
+    public void ende() {
+        soundClip.close();
+    }
 
     public void setVolume(float volume) {
-            this.volume.setValue(volume);
+        this.volume.setValue(volume);
     }
 
     FloatControl getVolumeControl() {

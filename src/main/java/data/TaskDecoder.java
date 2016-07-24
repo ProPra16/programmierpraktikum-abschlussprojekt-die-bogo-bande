@@ -11,7 +11,7 @@ public class TaskDecoder {
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
-    Document document = builder.parse(new File("build/resources/main/tasks.xml"));
+    Document document = builder.parse(new File("tasks.xml"));
 
     public TaskDecoder() throws Exception {
     }

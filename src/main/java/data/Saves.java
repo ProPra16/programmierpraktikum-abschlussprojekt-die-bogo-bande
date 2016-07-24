@@ -42,7 +42,7 @@ public class Saves {
     }
 
     public static void saveData(TextArea texter, String file) {
-        final Path path = Paths.get("build/resources/main/saves/" + file + ".txt");
+        final Path path = Paths.get("saves/" + file + ".txt");
         try {
             Files.write(path, texter.getParagraphs());
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class Saves {
     }
 
     public static void saveData2(TextArea texter, String file) {
-        final Path path = Paths.get("build/resources/main/saves/" + file + ".txt");
+        final Path path = Paths.get("saves/" + file + ".txt");
         try {
             Files.write(path, texter.getParagraphs(), StandardOpenOption.APPEND);
         } catch (IOException e) {
@@ -59,27 +59,28 @@ public class Saves {
         }
     }
 
-    public static void saveErrors(String s,int i){
-        if(s.equals("No Errors")) {
-        return;
+    public static void saveErrors(String s, int i) {
+        if (s.equals("No Errors")) {
+            return;
         }
-        final Path path = Paths.get("build/resources/main/saves/allerrors.txt");
-        final Path path2 = Paths.get("build/resources/main/saves/temperrors.txt");
+        final Path path = Paths.get("saves/allerrors.txt");
+        final Path path2 = Paths.get("saves/temperrors.txt");
         try {
-            if(i==0){
-                if(s.equals("all")) Files.write(path, "All Session Errors:updated if continue is hitted\n".getBytes());
-                if(s.equals("temp")) Files.write(path2, "You can watch all of your errors in this session in following file:allerrors.txt\n".getBytes());
-            }else {
+            if (i == 0) {
+                if (s.equals("all")) Files.write(path, "All Session Errors:updated if continue is hitted\n".getBytes());
+                if (s.equals("temp"))
+                    Files.write(path2, "You can watch all of your errors in this session in following file:allerrors.txt\n".getBytes());
+            } else {
                 Files.write(path, s.getBytes(), StandardOpenOption.APPEND);
                 Files.write(path2, s.getBytes(), StandardOpenOption.APPEND);
             }
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("Failed to save Errors");
         }
     }
 
     public static String loadErrors() {
-        final Path path2 = Paths.get("build/resources/main/saves/temperrors.txt");
+        final Path path2 = Paths.get("saves/temperrors.txt");
         String out;
         out = null;
         try {
@@ -96,16 +97,16 @@ public class Saves {
     }
 
 
-    public static String chooseFile(Stage stage,int ichooser) {
+    public static String chooseFile(Stage stage, int ichooser) {
         FileChooser dialog = new FileChooser();
-        if(ichooser==0) {
+        if (ichooser == 0) {
             dialog.setTitle("Choose Test");
-        }else{
+        } else {
             dialog.setTitle("Choose Code");
         }
         dialog.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Save Files", "*.txt"));
-        dialog.setInitialDirectory(new File("build/resources/main/saves"));
+        dialog.setInitialDirectory(new File("saves"));
         try {
             String path = dialog.showOpenDialog(stage).getPath();
             File file = new File(path);

@@ -1,5 +1,8 @@
 package data;
 
+import org.apache.commons.io.IOUtils;
+import sound.Volume;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class Config {
-
-    private static Path configPath = Paths.get("data/config.cfg");
+    private static String path = "data/config.cfg";
+    private static Path configPath = Paths.get(path);
 
     public static float loadFloatFromConfig(String h) {
         try {
@@ -19,9 +22,8 @@ public class Config {
             String[] valueVolume = objectSoundvolume.split("'");
             return Float.valueOf(valueVolume[1]);
         } catch (Exception e) {
-            e.printStackTrace();
+            return Volume.getMinVol();
         }
-        return 0;
     }
 
     public static boolean loadBoolFromConfig(String h) {
@@ -33,9 +35,8 @@ public class Config {
             String[] valueVolume = objectSoundvolume.split("'");
             return Boolean.valueOf(valueVolume[1]);
         } catch (Exception e) {
-            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     public static void saveConfig(String h, float f) {

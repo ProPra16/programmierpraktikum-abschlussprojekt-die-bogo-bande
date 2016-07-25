@@ -12,29 +12,33 @@ repositories{
 dependencies {
     compile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'de.hhu.stups', name: 'virtual-kata-lib', version: '1.0.0'
+    compile group: 'org.apache.commons', name: 'commons-io', version: '1.3.2'
 }
 
 jar {
     baseName = 'TDDT'
-    version =  global_version
     manifest {
-        attributes 'Main-Class': 'Main'
+        attributes(
+                'Main-Class': 'Main',
+        )
     }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-
 }
 
-task manageBuild {
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
+    baseName ="runTDDT"
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } with jar
+}
+
+task manageBuild{
     copy {
-        from 'build/resources/main/'
-        into 'build/classes/main/'
-    }
-    copy {
-        from 'build/libs/'
+        from 'build/libs/runTDDT.jar'
         into 'build/'
     }
 }
 
-assemble.doLast {
-    manageBuild
+artifacts {
+    archives fatJar
 }

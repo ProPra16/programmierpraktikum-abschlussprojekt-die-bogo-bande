@@ -6,15 +6,15 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.net.URL;
 
 public class TaskDecoder {
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder = factory.newDocumentBuilder();
-    Document document = builder.parse(new File("tasks.xml"));
+    Document document =  builder.parse(getClass().getClassLoader().getResourceAsStream("tasks.xml"));
 
-    public TaskDecoder() throws Exception {
-    }
+    public TaskDecoder() throws Exception {}
 
     public String getClass(int i) {
         return document.getElementsByTagName("class").item(i).getTextContent().trim();

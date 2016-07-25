@@ -24,21 +24,22 @@ jar {
     }
 }
 
-task fatJar(type: Jar) {
+task RunneableJar(type: Jar) {
     manifest.from jar.manifest
-    baseName ="runTDDT"
+    baseName ="TDDT-"+global_version
     from {
         configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
     } with jar
 }
 
 task manageBuild{
+    delete 'build/libs/TDDT-'+global_version+'.jar'
     copy {
-        from 'build/libs/runTDDT.jar'
+        from 'build/libs/TDDT-'+global_version+'.jar'
         into 'build/'
     }
 }
 
 artifacts {
-    archives fatJar
+    archives RunneableJar
 }

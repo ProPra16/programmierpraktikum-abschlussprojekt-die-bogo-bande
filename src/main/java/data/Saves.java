@@ -17,27 +17,37 @@ public class Saves {
         final Path path = Paths.get(s);
         try {
             String out = "";
-            if (!Files.exists(path)) {
-                Saves.saveDatahelper(textArea, s); //erstellt eine textdatei falls nicht vorhanden
-                System.out.print("erstellt neue Datei");
+            if (Files.notExists(path)) {
+                Saves.saveDataHelper(s); //erstellt eine textdatei falls nicht vorhanden
+                System.out.println("Erstellt neue Datei");
             }                                      //in diesem Fall immer einer leere
             for (String x : Files.readAllLines(path)) {
                 out = out + x + "\n";
             }
             textArea.setText(out);
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Failed to load data");
 
         }
 
     }
 
-    public static void saveDatahelper(TextArea texter, String file) {
+    public static void saveDataHelper(String file) {
         final Path path = Paths.get(file);
         try {
-            Files.write(path, texter.getParagraphs());
+            Files.createFile(path);
         } catch (IOException e) {
-            System.out.println("Failed to save data");
+            e.printStackTrace();
+            System.out.println();
+        }
+    }
+
+    public static void delete(String file){
+        final Path path = Paths.get(file);
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
         }
     }
 

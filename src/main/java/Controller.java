@@ -112,6 +112,11 @@ public class Controller {
             if (timer.isRunning()) timer.cancel();
             if (getVolume.isRunning()) getVolume.cancel();
             if (party.isRunning()) party.cancel();
+            Saves.delete("saves/codechange.txt");
+            Saves.delete("saves/code.txt");
+            Saves.delete("saves/testchange.txt");
+            Saves.delete("saves/test.txt");
+            Saves.delete("saves/temperrors.txt");
             stage.close();
         });
         check_the_baby.setSelected(Config.loadBoolFromConfig("ENABLE_BABYSTEPS"));
@@ -139,7 +144,7 @@ public class Controller {
 
     @FXML
     protected void entTab(ActionEvent event) {
-        if (!entButton.getText().equals("To Programm")) {
+        if (entButton.getText().equals("Entwicklung")) {
             entButton.setText("To Programm");
             Saves.loadData(code, "saves/codechange.txt");
             Saves.loadData(tests, "saves/testchange.txt");
@@ -147,7 +152,7 @@ public class Controller {
             //code.setDisable(true);   Es ist egal, ob der Benutzer in dieser Datei was ändert, gespeichert wird es nicht.
             //tests.setDisable(true);
         } else {
-            pause = 1;
+            pause = 5;
             entButton.setText("Entwicklung");
             Saves.loadData(code, "saves/code.txt");
             Saves.loadData(tests, "saves/test.txt");
@@ -532,6 +537,10 @@ public class Controller {
             }
             String t = "code";
             t = "test";
+
+            Saves.saveData(code, "code");
+            Saves.saveData(tests, "test");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -542,6 +551,7 @@ public class Controller {
 
         @Override
         protected Integer call() throws Exception {
+            int oldTime = 0;
             TaskDecoder tasks = new TaskDecoder();
             while (!isCancelled()) {
                 for (time = tasks.getBabystepsTime(Main.taskid); time >= 0; time--) {
@@ -580,9 +590,14 @@ public class Controller {
                                 }
                             } else continueTab(null);
                         }
-                    } else {      // Wenn der User im Refactor abschnitt ist, gibt es kein Zeitlimit
+
+                        oldTime = time;
+
+                    } else{
+                        // Wenn der User im Refactor abschnitt ist, gibt es kein Zeitlimit
                         time = tasks.getBabystepsTime(Main.taskid);
                     }
+                    if(pause == 5)time = oldTime;
                 }
             }
             return 0;

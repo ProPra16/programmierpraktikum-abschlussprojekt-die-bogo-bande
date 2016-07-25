@@ -15,6 +15,6 @@ PlaySound Snippet from Andrew Jenkins on
 http://stackoverflow.com/a/37693420
 modified a few bits and bobs
 
-
-
-
+Some Inspiration from this Stack Overflow Thread about Building with Gradle
+http://stackoverflow.com/a/31426413
+thx to blootsvoets
